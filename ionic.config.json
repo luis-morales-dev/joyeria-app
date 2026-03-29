@@ -1,0 +1,7 @@
+{
+  "name": "joyeria-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
