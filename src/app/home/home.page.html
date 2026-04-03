@@ -1,3 +1,4 @@
+<!--
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
@@ -17,4 +18,272 @@
     <strong>Ready to create an app?</strong>
     <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
   </div>
+</ion-content>-->
+
+<!-- ============================================================
+     src/app/pages/home/home.page.html
+     ============================================================ -->
+
+<ion-header class="infinity-header ion-no-border">
+  <ion-toolbar>
+    <div class="header-inner">
+      <!-- Logo / Nombre -->
+      <div class="brand">
+        <!--
+        <span class="brand-symbol">✦</span>
+        <span class="brand-name">Infinity</span>
+        -->
+        <img src="../../assets/img/logo_web_alt.png" alt="Logo Infinity" srcset="" class="logo-app">
+      </div>
+
+      <!-- Acciones -->
+      <div class="header-actions">
+        <!--
+        <ion-button fill="clear" class="icon-btn" [routerLink]="['/search']">
+          <ion-icon name="search-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        -->
+        <ion-button fill="clear" class="icon-btn cart-btn" [routerLink]="['/cart']">
+          <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
+          @if (cartCount() > 0) {
+            <ion-badge class="cart-badge">{{ cartCount() }}</ion-badge>
+          }
+        </ion-button>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="infinity-content">
+
+  <!-- Pull to refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content pullingText="Actualizar" refreshingText="Cargando…"></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- ═══════════════════════════════════════════════════════
+       BANNER HERO
+       ═══════════════════════════════════════════════════════ -->
+  <!--   
+  <section class="hero-section">
+    <div class="hero-bg">
+      <div class="hero-orb hero-orb--1"></div>
+      <div class="hero-orb hero-orb--2"></div>
+      <div class="hero-pattern"></div>
+    </div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Nueva Colección</p>
+      <h1 class="hero-title">
+        Elegancia y Estilo<br><em> en Cada Detalle</em>
+      </h1>
+      <p class="hero-subtitle">Joyería diseñada para momentos únicos</p>
+      <button class="hero-cta" [routerLink]="['/shop']">
+        Explorar colección
+        <span class="cta-arrow">→</span>
+      </button>
+    </div>
+
+    <!-- Decoración geométrica --
+    <div class="hero-deco">
+      <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="60" cy="60" r="55" stroke="rgba(236,183,199,0.25)" stroke-width="1"/>
+        <circle cx="60" cy="60" r="40" stroke="rgba(236,183,199,0.15)" stroke-width="1"/>
+        <line x1="5" y1="60" x2="115" y2="60" stroke="rgba(236,183,199,0.2)" stroke-width="0.5"/>
+        <line x1="60" y1="5" x2="60" y2="115" stroke="rgba(236,183,199,0.2)" stroke-width="0.5"/>
+        <circle cx="60" cy="60" r="5" fill="rgba(236,183,199,0.4)"/>
+      </svg>
+    </div>
+  </section>
+  -->
+
+  <!-- Buscador -->
+  <div class="search-wrapper ion-padding-horizontal">
+    <ion-item lines="none" class="search-item">
+      <ion-icon name="search-outline" slot="start" class="search-icon"></ion-icon>
+      <ion-input placeholder="Buscar productos..."></ion-input>
+    </ion-item>
+  </div>
+
+  <!-- Banner Promocional Principal -->
+  <div class="banner-wrapper ion-padding-horizontal">
+    <div class="promo-banner">
+      <div class="banner-bg-circles">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+      </div>
+      <div class="banner-content">
+        <span class="banner-tag">Oferta especial</span>
+        <h2 class="banner-title">Elegancia y Estilo<br> en Cada Detalle</h2>
+        <p class="banner-description">Descubre nuestra colección exclusiva de joyas</p>
+        <ion-button class="banner-btn" size="small" routerLink="/categories">
+          Explorar colección
+          <ion-icon name="arrow-forward-outline" slot="end"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="banner-image">
+        <ion-icon name="bag-handle-outline"></ion-icon>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CATEGORÍAS
+       ═══════════════════════════════════════════════════════ -->
+  <section class="section categories-section">
+    <header class="section-header">
+      <h2 class="section-title">Categorías</h2>
+      <a class="section-link" [routerLink]="['/categories']">Ver todas</a>
+    </header>
+
+    <div class="categories-scroll">
+
+      <!-- Chip "Todas" -->
+      <button
+        class="cat-chip"
+        [class.cat-chip--active]="activeCategory() === null"
+        (click)="selectCategory(null)">
+        Todas
+      </button>
+
+      <!-- Skeleton categorías -->
+      @if (loadingCats()) {
+        @for (s of skeletonItems; track $index) {
+          <div class="cat-chip cat-chip--skeleton">
+            <ion-skeleton-text animated style="width: 60px; border-radius: 20px;"></ion-skeleton-text>
+          </div>
+        }
+      }
+
+      <!-- Categorías reales -->
+      @if (!loadingCats()) {
+        @for (cat of categories(); track cat.id) {
+          <button
+            class="cat-chip"
+            [class.cat-chip--active]="activeCategory() === cat.id"
+            (click)="selectCategory(cat.id)">
+            @if (cat.image) {
+              <img [src]="cat.image.src" [alt]="cat.name" class="cat-chip-img" />
+            }
+            {{ cat.name }}
+          </button>
+        }
+      }
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PRODUCTOS DESTACADOS
+       ═══════════════════════════════════════════════════════ -->
+  <section class="section products-section">
+    <header class="section-header">
+      <h2 class="section-title">Destacados</h2>
+      <a class="section-link" [routerLink]="['/shop']">Ver todo</a>
+    </header>
+
+    <!-- Skeleton grid -->
+    @if (loadingFeatured()) {
+      <div class="products-grid">
+        @for (s of skeletonItems; track $index) {
+          <div class="product-card product-card--skeleton">
+            <div class="card-img-wrap">
+              <ion-skeleton-text animated class="skeleton-img"></ion-skeleton-text>
+            </div>
+            <div class="card-body">
+              <ion-skeleton-text animated style="width: 80%; height: 14px; margin-bottom: 6px;"></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 50%; height: 12px;"></ion-skeleton-text>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Grid real -->
+    @if (!loadingFeatured()) {
+      @if (featured().length === 0) {
+        <div class="empty-state">
+          <span class="empty-icon">✦</span>
+          <p>No hay productos en esta categoría</p>
+        </div>
+      }
+
+      @if (featured().length > 0) {
+        <div class="products-grid">
+          @for (product of featured(); track product.id) {
+            <div class="product-card" [routerLink]="['/product', product.id]">
+
+              <!-- Imagen -->
+              <div class="card-img-wrap">
+                <img
+                  [src]="getProductImage(product)"
+                  [alt]="product.name"
+                  class="card-img"
+                  loading="lazy"
+                />
+
+                <!-- Badge descuento -->
+                @if (hasDiscount(product)) {
+                  <span class="badge-discount">−{{ discountPercent(product) }}%</span>
+                }
+
+                <!-- Wishlist -->
+                <button class="btn-wishlist" (click)="$event.stopPropagation()">
+                  <ion-icon name="heart-outline"></ion-icon>
+                </button>
+
+                <!-- Out of stock overlay -->
+                @if (product.stock_status !== 'instock') {
+                  <div class="out-of-stock-overlay">
+                    <span>Agotado</span>
+                  </div>
+                }
+              </div>
+
+              <!-- Info -->
+              <div class="card-body">
+                <p class="card-name">{{ product.name }}</p>
+
+                <!-- Rating -->
+                @if (+product.average_rating > 0) {
+                  <div class="card-rating">
+                    <ion-icon name="star-sharp" class="star-icon"></ion-icon>
+                    <span>{{ product.average_rating }}</span>
+                    <span class="rating-count">({{ product.rating_count }})</span>
+                  </div>
+                }
+
+                <!-- Precio -->
+                <div class="card-price-row">
+                  <div class="card-prices">
+                    <span class="price-current">{{ formatPrice(product.price) }}</span>
+                    @if (hasDiscount(product)) {
+                      <span class="price-regular">{{ formatPrice(product.regular_price) }}</span>
+                    }
+                  </div>
+
+                  <!-- Botón agregar -->
+                  <button
+                    class="btn-add"
+                    [class.btn-add--added]="isInCart(product.id)"
+                    [disabled]="product.stock_status !== 'instock'"
+                    (click)="addToCart(product, $event)">
+                    @if (isInCart(product.id)) {
+                      <span>✓</span>
+                    } @else {
+                      <span>+</span>
+                    }
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          }
+        </div>
+      }
+    }
+  </section>
+
+  <!-- Espaciado inferior para tab bar -->
+  <div style="height: 80px;"></div>
+
 </ion-content>

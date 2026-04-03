@@ -1,0 +1,227 @@
+// ─── Header ─────────────────────────────────────────────────
+.infinity-header {
+
+  ion-toolbar {
+    --background: var(--navy);
+    --border-width: 0;
+    padding: 0;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .brand-symbol {
+    color: var(--rose-light);
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .brand-name {
+    font-family: var(--infinity-font);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .icon-btn {
+    --color: var(--rose-light);
+    --padding-start: 8px;
+    --padding-end: 8px;
+    font-size: 22px;
+    position: relative;
+  }
+
+  .cart-btn {
+    position: relative;
+  }
+
+  .cart-badge {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    --background: var(--rose-mid);
+    --color: white;
+    font-size: 9px;
+    min-width: 16px;
+    height: 16px;
+    padding: 3px;
+    border-radius: 8px;
+  }
+}
+
+// ─── Contenido general ───────────────────────────────────────
+.infinity-content {
+  --background: var(--cream);
+  font-family: var(--infinity-font-alt);
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 32px;
+
+  h2 {
+      margin: 0 0 0 16px;
+      color: #434343;
+  }
+
+  p {
+      margin: 0 16px 0 0;
+      color: #656565;
+  }
+}
+
+// ─── Grid ─────────────────────────────────────────────────────────────────
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  padding: 16px;
+}
+
+// ─── Tarjeta ──────────────────────────────────────────────────────────────
+
+.category-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  height: 150px;
+  cursor: pointer;
+  background: #F1EFE8;
+  border: 1px solid #EBEBEB;
+  transition: transform 0.15s;
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  // Tarjeta ancha: cada 5 tarjetas, la primera ocupa todo el ancho
+  &:nth-child(5n + 1) {
+    grid-column: span 2;
+    height: 170px;
+  }
+
+  // ─── Imagen ─────────────────────────────────────────────────────────────
+
+  .card-img-wrapper {
+    position: absolute;
+    inset: 0;
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .no-image {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      ion-icon {
+        font-size: 40px;
+        color: #B4B2A9;
+      }
+    }
+
+    // Gradiente oscuro en la parte inferior para legibilidad del texto
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        transparent 30%,
+        rgba(0, 0, 0, 0.55) 100%
+      );
+    }
+  }
+
+  // ─── Texto ──────────────────────────────────────────────────────────────
+
+  .card-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 14px;
+    z-index: 2;
+
+    .card-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0 0 2px 0;
+      line-height: 1.2;
+      letter-spacing: -0.2px;
+    }
+
+    .card-count {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.75);
+    }
+  }
+}
+
+// ─── Skeleton ─────────────────────────────────────────────────────────────
+
+.skeleton-card {
+  background: transparent;
+  border: none;
+
+  .skeleton-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 16px;
+  }
+
+  .card-label {
+    position: relative;
+    padding: 8px 0 0 0;
+  }
+}
+
+// ─── Estado vacío ─────────────────────────────────────────────────────────
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 12px;
+
+  ion-icon {
+    font-size: 52px;
+    color: #D3D1C7;
+  }
+
+  p {
+    font-size: 15px;
+    color: #888780;
+    margin: 0;
+  }
+}

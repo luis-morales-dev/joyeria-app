@@ -1,0 +1,253 @@
+<!--
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>checkout</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">checkout</ion-title>
+    </ion-toolbar>
+  </ion-header>
+</ion-content>-->
+
+
+<!-- ============================================================
+     src/app/pages/checkout/checkout.page.html
+     ============================================================ -->
+
+<ion-header class="infinity-header ion-no-border">
+  <ion-toolbar>
+    <div class="header-inner">
+      <ion-button fill="clear" class="btn-back" (click)="goBack()" *ngIf="!orderPlaced()">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <div class="header-title">
+        <span class="brand-sym">✦</span>
+        <span>{{ orderPlaced() ? 'Pedido Confirmado' : 'Finalizar Compra' }}</span>
+      </div>
+      <div style="width:40px;"></div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="infinity-content">
+
+  <!-- ═══════════════════════════════════════════════════════
+       PANTALLA DE CONFIRMACIÓN
+       ═══════════════════════════════════════════════════════ -->
+  <div class="confirmation-screen" *ngIf="orderPlaced()">
+    <div class="confirm-icon-wrap">
+      <ion-icon name="checkmark-circle" class="confirm-icon"></ion-icon>
+    </div>
+
+    <h1 class="confirm-title">¡Pedido realizado!</h1>
+    <p class="confirm-sub">Gracias por tu compra en Joyería Infinity</p>
+
+    <div class="order-number-card">
+      <span class="order-number-label">Número de orden</span>
+      <span class="order-number-value">{{ orderNumber() }}</span>
+    </div>
+
+    <p class="confirm-msg">
+      Recibirás un correo de confirmación con los detalles de tu pedido y
+      la información de pago seleccionada.
+    </p>
+
+    <button class="btn-home" (click)="goHome()">
+      Seguir comprando
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FORMULARIO DE CHECKOUT
+       ═══════════════════════════════════════════════════════ -->
+  <div class="checkout-content" *ngIf="!orderPlaced()">
+
+    <!-- ── Resumen del pedido ──────────────────────────── -->
+    <section class="section summary-section">
+
+      <button class="summary-toggle" (click)="toggleSummary()">
+        <div class="summary-toggle-left">
+          <span class="section-title">Resumen del pedido</span>
+          <span class="summary-badge">{{ items().length }} {{ items().length === 1 ? 'producto' : 'productos' }}</span>
+        </div>
+        <div class="summary-toggle-right">
+          <span class="summary-total-preview">{{ formatPrice(total()) }}</span>
+          <ion-icon [name]="summaryExpanded() ? 'chevron-up-outline' : 'chevron-down-outline'" class="summary-chev"></ion-icon>
+        </div>
+      </button>
+
+      <div class="summary-body" [class.summary-body--expanded]="summaryExpanded()">
+
+        <!-- Lista de ítems -->
+        <div class="summary-items">
+          <div
+            class="summary-item"
+            *ngFor="let item of items(); trackBy: trackByItem">
+            <div class="summary-item-img">
+              <img [src]="getItemImage(item)" [alt]="item.product.name" />
+              <span class="summary-item-qty">{{ item.quantity }}</span>
+            </div>
+            <span class="summary-item-name">{{ item.product.name }}</span>
+            <span class="summary-item-price">
+              {{ formatPrice(+(item.variation?.price ?? item.product.price) * item.quantity) }}
+            </span>
+          </div>
+        </div>
+
+        <div class="summary-divider"></div>
+
+        <!-- Totales -->
+        <div class="totals">
+          <div class="total-row">
+            <span class="total-label">Subtotal</span>
+            <span class="total-value">{{ formatPrice(subtotal()) }}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">Envío</span>
+            <span class="total-value total-value--free" *ngIf="shipping() === 0">Gratis</span>
+            <span class="total-value" *ngIf="shipping() > 0">{{ formatPrice(shipping()) }}</span>
+          </div>
+          <div class="total-row total-row--grand">
+            <span class="grand-label">Total</span>
+            <span class="grand-value">{{ formatPrice(total()) }}</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Datos personales ────────────────────────────── -->
+    <section class="section">
+      <h2 class="section-title">Datos personales</h2>
+
+      <form [formGroup]="Myform" class="form-fields">
+
+        <!-- Nombre -->
+        <div class="field-group field-group--half">
+
+          <div class="field-wrap" [class.field-wrap--error]="isFieldInvalid('firstName')">
+            <label class="field-label">Nombre</label>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="firstName"
+              placeholder="María"
+              autocomplete="given-name"
+            />
+            <span class="field-error" *ngIf="isFieldInvalid('firstName')">
+              {{ getFieldError('firstName') }}
+            </span>
+          </div>
+
+          <div class="field-wrap" [class.field-wrap--error]="isFieldInvalid('lastName')">
+            <label class="field-label">Apellido</label>
+            <input
+              class="field-input"
+              type="text"
+              formControlName="lastName"
+              placeholder="García"
+              autocomplete="family-name"
+            />
+            <span class="field-error" *ngIf="isFieldInvalid('lastName')">
+              {{ getFieldError('lastName') }}
+            </span>
+          </div>
+
+        </div>
+
+        <!-- Email -->
+        <div class="field-wrap" [class.field-wrap--error]="isFieldInvalid('email')">
+          <label class="field-label">Correo electrónico</label>
+          <input
+            class="field-input"
+            type="email"
+            formControlName="email"
+            placeholder="maria@ejemplo.com"
+            autocomplete="email"
+            inputmode="email"
+          />
+          <span class="field-error" *ngIf="isFieldInvalid('email')">
+            {{ getFieldError('email') }}
+          </span>
+        </div>
+
+        <!-- Teléfono -->
+        <div class="field-wrap" [class.field-wrap--error]="isFieldInvalid('phone')">
+          <label class="field-label">Teléfono (10 dígitos)</label>
+          <input
+            class="field-input"
+            type="tel"
+            formControlName="phone"
+            placeholder="5512345678"
+            autocomplete="tel"
+            inputmode="tel"
+            maxlength="10"
+          />
+          <span class="field-error" *ngIf="isFieldInvalid('phone')">
+            {{ getFieldError('phone') }}
+          </span>
+        </div>
+
+      </form>
+    </section>
+
+    <!-- ── Método de pago ──────────────────────────────── -->
+    <section class="section">
+      <h2 class="section-title">Método de pago</h2>
+
+      <div class="payment-options">
+        <button
+          class="payment-option"
+          *ngFor="let opt of paymentOptions"
+          [class.payment-option--active]="selectedPayment() === opt.id"
+          (click)="selectPayment(opt.id)">
+
+          <div class="payment-icon-wrap">
+            <ion-icon [name]="opt.icon" class="payment-icon"></ion-icon>
+          </div>
+
+          <div class="payment-info">
+            <span class="payment-label">{{ opt.label }}</span>
+            <span class="payment-desc">{{ opt.description }}</span>
+          </div>
+
+          <div class="payment-radio" [class.payment-radio--active]="selectedPayment() === opt.id">
+            <div class="payment-radio-dot"></div>
+          </div>
+
+        </button>
+      </div>
+    </section>
+
+    <!-- Espacio para footer -->
+    <div style="height: 110px;"></div>
+
+  </div>
+
+</ion-content>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER — BOTÓN CONFIRMAR
+     ═══════════════════════════════════════════════════════ -->
+<ion-footer class="infinity-footer ion-no-border" *ngIf="!orderPlaced()">
+  <div class="footer-inner">
+    <div class="footer-total">
+      <span class="footer-total-label">Total a pagar</span>
+      <span class="footer-total-value">{{ formatPrice(total()) }}</span>
+    </div>
+
+    <button
+      class="btn-confirm"
+      [class.btn-confirm--loading]="submitting()"
+      [disabled]="submitting()"
+      (click)="placeOrder()">
+      <ion-spinner name="crescent" *ngIf="submitting()" class="btn-spinner"></ion-spinner>
+      <span *ngIf="!submitting()">Confirmar pedido</span>
+      <span *ngIf="submitting()">Procesando…</span>
+    </button>
+  </div>
+</ion-footer>

@@ -1,0 +1,555 @@
+// ============================================================
+// src/app/pages/checkout/checkout.page.scss
+// ============================================================
+
+
+// ─── Header ──────────────────────────────────────────────────
+.infinity-header ion-toolbar {
+  --background: var(--navy);
+  --border-width: 0;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+}
+
+.btn-back {
+  --color: var(--rose-light);
+  --padding-start: 8px;
+  --padding-end: 8px;
+  font-size: 22px;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--infinity-font);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.5px;
+}
+
+.brand-sym {
+  color: var(--rose-light);
+  font-size: 13px;
+}
+
+// ─── Contenido ───────────────────────────────────────────────
+.infinity-content {
+  --background: var(--cream);
+  font-family: var(--infinity-font-alt);
+}
+
+// ─── Secciones ───────────────────────────────────────────────
+.section {
+  background: var(--white);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  margin: 16px 16px 0;
+  overflow: hidden;
+  animation: fadeUp 0.35s ease both;
+
+  &:nth-child(2) { animation-delay: 0.05s; }
+  &:nth-child(3) { animation-delay: 0.10s; }
+}
+
+.section-title {
+  font-family: var(--infinity-font);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  padding: 16px 18px 14px;
+  display: block;
+}
+
+// ─── Resumen del pedido ───────────────────────────────────────
+.summary-section { }
+
+.summary-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  gap: 8px;
+}
+
+.summary-toggle-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.summary-badge {
+  background: rgba(236, 183, 199, 0.3);
+  color: var(--rose-mid);
+  font-size: 11px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+
+.summary-toggle-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-total-preview {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.summary-chev {
+  font-size: 16px;
+  color: var(--rose-mid);
+  transition: transform 0.2s;
+}
+
+.summary-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+
+  &--expanded { max-height: 800px; }
+}
+
+// Ítems del resumen
+.summary-items {
+  padding: 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.summary-item-img {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f5eeee;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.summary-item-qty {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: var(--navy);
+  color: var(--rose-light);
+  font-size: 9px;
+  font-weight: 800;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.summary-item-name {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.summary-item-price {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--navy);
+  flex-shrink: 0;
+}
+
+.summary-divider {
+  height: 1px;
+  background: rgba(26, 43, 60, 0.07);
+  margin: 0 18px 14px;
+}
+
+// Totales
+.totals {
+  padding: 0 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &--grand {
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(199, 148, 164, 0.4);
+  }
+}
+
+.total-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.total-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+
+  &--free {
+    color: var(--success);
+    font-weight: 800;
+  }
+}
+
+.grand-label {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.grand-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+// ─── Formulario ──────────────────────────────────────────────
+.form-fields {
+  padding: 0 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field-group--half {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  &--error .field-input {
+    border-color: var(--danger);
+  }
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.field-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(199, 148, 164, 0.3);
+  border-radius: 10px;
+  background: var(--cream);
+  font-size: 14px;
+  font-family: 'Nunito', sans-serif;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.2s;
+
+  &::placeholder { color: #bbb; }
+
+  &:focus {
+    border-color: var(--rose-mid);
+    background: var(--white);
+  }
+}
+
+.field-error {
+  font-size: 11px;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+// ─── Métodos de pago ──────────────────────────────────────────
+.payment-options {
+  padding: 0 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(199, 148, 164, 0.25);
+  background: var(--cream);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, background 0.2s;
+
+  &--active {
+    border-color: var(--navy);
+    background: var(--white);
+  }
+}
+
+.payment-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(236, 183, 199, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .payment-icon {
+    font-size: 20px;
+    color: var(--rose-mid);
+  }
+}
+
+.payment-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.payment-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.payment-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.payment-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid rgba(199, 148, 164, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.2s;
+
+  &--active {
+    border-color: var(--navy);
+  }
+
+  .payment-radio-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: transparent;
+    transition: background 0.2s;
+  }
+}
+
+.payment-option--active .payment-radio-dot {
+  background: var(--navy);
+}
+
+// ─── Footer ──────────────────────────────────────────────────
+.infinity-footer {
+  background: transparent;
+  &::before { display: none; }
+}
+
+.footer-inner {
+  background: var(--white);
+  border-top: 1px solid rgba(26, 43, 60, 0.08);
+  padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-total {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.footer-total-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer-total-value {
+  font-family: var(--infinity-font-alt);
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.btn-confirm {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--rose-mid);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 800;
+  padding: 14px 20px;
+  border-radius: 32px;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: opacity 0.2s, transform 0.15s;
+  font-family: var(--infinity-font-alt);
+
+  &:active { opacity: 0.85; transform: scale(0.97); }
+
+  &--loading { opacity: 0.75; cursor: not-allowed; }
+
+  .btn-spinner {
+    width: 18px;
+    height: 18px;
+    --color: var(--rose-light);
+  }
+}
+
+// ─── Pantalla de confirmación ────────────────────────────────
+.confirmation-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 56px 28px 40px;
+  text-align: center;
+  animation: fadeUp 0.5s ease both;
+}
+
+.confirm-icon-wrap {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: rgba(46, 158, 107, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+
+  .confirm-icon {
+    font-size: 52px;
+    color: var(--success);
+  }
+}
+
+.confirm-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 10px;
+}
+
+.confirm-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 28px;
+}
+
+.order-number-card {
+  background: var(--white);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: 16px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.order-number-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.order-number-value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 2px;
+}
+
+.confirm-msg {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin: 0 0 36px;
+}
+
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--navy);
+  color: var(--rose-light);
+  font-size: 14px;
+  font-weight: 800;
+  padding: 14px 36px;
+  border-radius: 32px;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+
+  &:active { opacity: 0.85; }
+}
+
+// ─── Animaciones ─────────────────────────────────────────────
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

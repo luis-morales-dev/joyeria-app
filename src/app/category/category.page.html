@@ -1,0 +1,226 @@
+<!--
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>category</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">category</ion-title>
+    </ion-toolbar>
+  </ion-header>
+</ion-content>
+-->
+
+<!-- ============================================================
+     src/app/pages/category/category.page.html
+     ============================================================ -->
+
+<ion-header class="infinity-header ion-no-border">
+  <ion-toolbar>
+    <div class="header-inner">
+      <ion-button fill="clear" class="btn-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+
+      <h1 class="header-title">{{ categoryName() }}</h1>
+
+      <ion-button fill="clear" class="btn-cart" (click)="goToCart()">
+        <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
+        <ion-badge class="cart-badge" *ngIf="cartCount() > 0">
+          {{ cartCount() }}
+        </ion-badge>
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="infinity-content">
+
+  <!-- ═══════════════════════════════════════════════════════
+       BANNER DE CATEGORÍA
+       ═══════════════════════════════════════════════════════ -->
+  <div class="category-banner">
+    <!-- Imagen de fondo si existe -->
+    <img
+      *ngIf="categoryImg()"
+      [src]="categoryImg()"
+      [alt]="categoryName()"
+      class="banner-img"
+    />
+    <!-- Overlay con nombre -->
+    <div class="banner-overlay">
+      <p class="banner-eyebrow">Colección</p>
+      <h2 class="banner-name">{{ categoryName() }}</h2>
+      <p class="banner-count" *ngIf="!loading()">
+        {{ totalItems() }} {{ totalItems() === 1 ? 'producto' : 'productos' }}
+      </p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       BARRA DE FILTROS / ORDEN
+       ═══════════════════════════════════════════════════════ -->
+  <div class="filters-bar">
+    <div class="filters-left">
+      <span class="results-count" *ngIf="!loading()">
+        {{ totalItems() }} resultados
+      </span>
+      <ion-skeleton-text
+        *ngIf="loading()"
+        animated
+        style="width:80px; height:13px; border-radius:6px;">
+      </ion-skeleton-text>
+    </div>
+
+    <!-- Botón de ordenamiento -->
+    <div class="sort-wrap">
+      <button class="btn-sort" (click)="toggleSortMenu()">
+        <ion-icon name="funnel-outline"></ion-icon>
+        <span>{{ getSortLabel() }}</span>
+      </button>
+
+      <!-- Dropdown de orden -->
+      <div class="sort-dropdown" *ngIf="showSortMenu()">
+        <button
+          class="sort-option"
+          *ngFor="let opt of sortOptions"
+          [class.sort-option--active]="activeSort() === opt.id"
+          (click)="selectSort(opt.id)">
+          {{ opt.label }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backdrop para cerrar el menú de orden -->
+  <div
+    class="sort-backdrop"
+    *ngIf="showSortMenu()"
+    (click)="toggleSortMenu()">
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SKELETON GRID
+       ═══════════════════════════════════════════════════════ -->
+  <div class="products-grid" *ngIf="loading()">
+    <div class="product-card product-card--skeleton" *ngFor="let s of skeletonItems">
+      <div class="card-img-wrap">
+        <ion-skeleton-text animated class="skeleton-img"></ion-skeleton-text>
+      </div>
+      <div class="card-body">
+        <ion-skeleton-text animated style="width:80%; height:13px; margin-bottom:6px;"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width:50%; height:12px;"></ion-skeleton-text>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       ESTADO VACÍO
+       ═══════════════════════════════════════════════════════ -->
+  <div class="empty-state" *ngIf="!loading() && products().length === 0">
+    <span class="empty-icon">✦</span>
+    <p class="empty-title">Sin productos</p>
+    <p class="empty-sub">Esta categoría no tiene productos disponibles</p>
+    <button class="btn-back-shop" (click)="goBack()">Volver al inicio</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       GRID DE PRODUCTOS
+       ═══════════════════════════════════════════════════════ -->
+  <div class="products-grid" *ngIf="!loading() && products().length > 0">
+    <div
+      class="product-card"
+      *ngFor="let product of products(); trackBy: trackByProduct"
+      (click)="goToProduct(product.id)">
+
+      <!-- Imagen -->
+      <div class="card-img-wrap">
+        <img
+          [src]="getProductImage(product)"
+          [alt]="product.name"
+          class="card-img"
+          loading="lazy"
+        />
+
+        <!-- Badge descuento -->
+        <span class="badge-discount" *ngIf="hasDiscount(product)">
+          −{{ discountPercent(product) }}%
+        </span>
+
+        <!-- Wishlist -->
+        <button class="btn-wishlist" (click)="$event.stopPropagation()">
+          <ion-icon name="heart-outline"></ion-icon>
+        </button>
+
+        <!-- Out of stock -->
+        <div class="out-of-stock-overlay" *ngIf="product.stock_status !== 'instock'">
+          <span>Agotado</span>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="card-body">
+        <p class="card-name">{{ product.name }}</p>
+
+        <!-- Rating -->
+        <div class="card-rating" *ngIf="+product.average_rating > 0">
+          <ion-icon name="star-sharp" class="star-icon"></ion-icon>
+          <span>{{ product.average_rating }}</span>
+          <span class="rating-count">({{ product.rating_count }})</span>
+        </div>
+
+        <!-- Precio + botón -->
+        <div class="card-price-row">
+          <div class="card-prices">
+            <span class="price-current">{{ formatPrice(product.price) }}</span>
+            <span class="price-regular" *ngIf="hasDiscount(product)">
+              {{ formatPrice(product.regular_price) }}
+            </span>
+          </div>
+
+          <button
+            class="btn-add"
+            [class.btn-add--added]="isInCart(product.id)"
+            [disabled]="product.stock_status !== 'instock'"
+            (click)="addToCart(product, $event)">
+            <span *ngIf="!isInCart(product.id)">+</span>
+            <span *ngIf="isInCart(product.id)">✓</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       BOTÓN CARGAR MÁS
+       ═══════════════════════════════════════════════════════ -->
+  <div class="load-more-wrap" *ngIf="!loading() && hasMore()">
+    <button
+      class="btn-load-more"
+      [class.btn-load-more--loading]="loadingMore()"
+      [disabled]="loadingMore()"
+      (click)="loadMore()">
+      <ion-spinner name="crescent" *ngIf="loadingMore()" class="load-spinner"></ion-spinner>
+      <span *ngIf="!loadingMore()">
+        Cargar más
+        <span class="load-more-count">
+          ({{ products().length }} de {{ totalItems() }})
+        </span>
+      </span>
+      <span *ngIf="loadingMore()">Cargando…</span>
+    </button>
+  </div>
+
+  <!-- Fin de resultados -->
+  <div class="end-results" *ngIf="!loading() && !hasMore() && products().length > 0">
+    <span class="end-sym">✦</span>
+    <p>Mostrando todos los productos</p>
+  </div>
+
+  <div style="height: 32px;"></div>
+
+</ion-content>

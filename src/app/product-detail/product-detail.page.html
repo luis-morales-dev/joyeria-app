@@ -1,0 +1,254 @@
+<!--<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>product-detail</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">product-detail</ion-title>
+    </ion-toolbar>
+  </ion-header>
+</ion-content>-->
+
+
+<!-- ============================================================
+     src/app/pages/product-detail/product-detail.page.html
+     ============================================================ -->
+
+<ion-header class="infinity-header ion-no-border">
+  <ion-toolbar>
+    <div class="header-inner">
+      <ion-button fill="clear" class="btn-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+
+      <ion-button fill="clear" class="btn-cart" (click)="goToCart()">
+        <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
+        <ion-badge class="cart-badge" *ngIf="cartCount() > 0">
+          {{ cartCount() }}
+        </ion-badge>
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="infinity-content">
+
+  <!-- ═══════════════════════════════════════════════════════
+       SKELETON
+       ═══════════════════════════════════════════════════════ -->
+  <ng-container *ngIf="loading()">
+    <div class="skeleton-gallery">
+      <ion-skeleton-text animated class="skeleton-main-img"></ion-skeleton-text>
+      <div class="skeleton-thumbs">
+        <ion-skeleton-text animated *ngFor="let s of [0,1,2]" class="skeleton-thumb"></ion-skeleton-text>
+      </div>
+    </div>
+    <div class="skeleton-body">
+      <ion-skeleton-text animated style="width:60%; height:13px; margin-bottom:10px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width:90%; height:22px; margin-bottom:8px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width:40%; height:28px; margin-bottom:24px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width:100%; height:14px; margin-bottom:8px;"></ion-skeleton-text>
+      <ion-skeleton-text animated style="width:80%; height:14px;"></ion-skeleton-text>
+    </div>
+  </ng-container>
+
+  <!-- ═══════════════════════════════════════════════════════
+       ERROR
+       ═══════════════════════════════════════════════════════ -->
+  <div class="error-state" *ngIf="!loading() && error()">
+    <span class="error-icon">✦</span>
+    <p>{{ error() }}</p>
+    <button class="btn-retry" (click)="goBack()">Volver</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CONTENIDO
+       ═══════════════════════════════════════════════════════ -->
+  <ng-container *ngIf="!loading() && !error() && product() as p">
+
+    <!-- ── Galería ─────────────────────────────────────── -->
+    <section class="gallery-section">
+
+      <!-- Imagen principal -->
+      <div class="main-img-wrap">
+        <img
+          [src]="getActiveImage()"
+          [alt]="p.name"
+          class="main-img"
+        />
+
+        <!-- Badge descuento -->
+        <span class="badge-sale" *ngIf="isOnSale() && discountPercent() > 0">
+          −{{ discountPercent() }}%
+        </span>
+
+        <!-- Wishlist -->
+        <button class="btn-wishlist" (click)="toggleWishlist()">
+          <ion-icon [name]="inWishlist() ? 'heart' : 'heart-outline'"></ion-icon>
+        </button>
+
+        <!-- Out of stock -->
+        <div class="out-of-stock-overlay" *ngIf="!inStock()">
+          <span>Agotado</span>
+        </div>
+      </div>
+
+      <!-- Thumbnails -->
+      <div class="thumbs-row" *ngIf="p.images.length > 1">
+        <button
+          class="thumb-btn"
+          *ngFor="let img of p.images; let i = index"
+          [class.thumb-btn--active]="activeImageIndex() === i"
+          (click)="selectImage(i)">
+          <img [src]="img.src" [alt]="img.alt || p.name" class="thumb-img" />
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ── Info principal ──────────────────────────────── -->
+    <section class="info-section">
+
+      <!-- Categoría -->
+      <p class="product-category" *ngIf="p.categories.length">
+        {{ p.categories[0].name }}
+      </p>
+
+      <!-- Nombre -->
+      <h1 class="product-name">{{ p.name }}</h1>
+
+      <!-- Rating -->
+      <div class="rating-row" *ngIf="+p.average_rating > 0">
+        <div class="stars">
+          <ion-icon
+            *ngFor="let s of ratingStars(); let i = index"
+            [name]="s === 1 ? 'star-sharp' : 'star-outline'"
+            class="star"
+            [class.star--filled]="s === 1">
+          </ion-icon>
+        </div>
+        <span class="rating-value">{{ p.average_rating }}</span>
+        <span class="rating-count">({{ p.rating_count }} reseñas)</span>
+      </div>
+
+      <!-- Precio -->
+      <div class="price-block">
+        <span class="price-current">{{ formatPrice(displayPrice()) }}</span>
+        <span class="price-regular" *ngIf="isOnSale() && displayRegularPrice()">
+          {{ formatPrice(displayRegularPrice()) }}
+        </span>
+      </div>
+
+      <!-- Stock -->
+      <div class="stock-pill" [class.stock-pill--out]="!inStock()">
+        <span class="stock-dot"></span>
+        <span>{{ inStock() ? 'En stock' : 'Agotado' }}</span>
+      </div>
+
+    </section>
+
+    <!-- ── Variaciones ─────────────────────────────────── -->
+    <section
+      class="variations-section"
+      *ngIf="p.type === 'variable' && p.attributes.length">
+
+      <ng-container *ngFor="let attr of p.attributes">
+        <ng-container *ngIf="attr.variation">
+
+          <div class="attr-block">
+            <div class="attr-header">
+              <span class="attr-name">{{ attr.name }}</span>
+              <span class="attr-selected" *ngIf="isAttributeSelected(attr.name, selectedAttributes()[attr.name])">
+                {{ selectedAttributes()[attr.name] }}
+              </span>
+            </div>
+
+            <div class="options-row">
+              <button
+                class="option-btn"
+                *ngFor="let opt of attr.options"
+                [class.option-btn--active]="isAttributeSelected(attr.name, opt)"
+                [class.option-btn--unavailable]="!isOptionAvailable(attr.name, opt)"
+                [disabled]="!isOptionAvailable(attr.name, opt)"
+                (click)="selectAttribute(attr.name, opt)">
+                {{ opt }}
+                <ion-icon
+                  name="checkmark-outline"
+                  class="option-check"
+                  *ngIf="isAttributeSelected(attr.name, opt)">
+                </ion-icon>
+              </button>
+            </div>
+          </div>
+
+        </ng-container>
+      </ng-container>
+
+    </section>
+
+    <!-- ── Descripción ─────────────────────────────────── -->
+    <section class="desc-section" *ngIf="p.description || p.short_description">
+
+      <button class="desc-header" (click)="toggleDesc()">
+        <span class="desc-title">Descripción</span>
+        <ion-icon
+          name="chevron-forward-outline"
+          class="desc-chevron"
+          [class.desc-chevron--open]="descExpanded()">
+        </ion-icon>
+      </button>
+
+      <div class="desc-body" [class.desc-body--expanded]="descExpanded()">
+        <p class="desc-text">
+          {{ stripHtml(p.description || p.short_description) }}
+        </p>
+      </div>
+
+    </section>
+
+    <!-- Espacio para el footer fijo -->
+    <div style="height: 100px;"></div>
+
+  </ng-container>
+
+</ion-content>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER FIJO — BOTÓN AGREGAR AL CARRITO
+     ═══════════════════════════════════════════════════════ -->
+<ion-footer
+  class="infinity-footer ion-no-border"
+  *ngIf="!loading() && !error() && product()">
+  <div class="footer-inner">
+
+    <div class="footer-price">
+      <span class="footer-price-label">Precio</span>
+      <span class="footer-price-value">{{ formatPrice(displayPrice()) }}</span>
+    </div>
+
+    <!-- Ya está en el carrito -->
+    <button
+      class="btn-add btn-add--in-cart"
+      *ngIf="isInCart()"
+      (click)="goToCart()">
+      <ion-icon name="cart-outline"></ion-icon>
+      Ver carrito
+    </button>
+
+    <!-- Agregar al carrito -->
+    <button
+      class="btn-add"
+      *ngIf="!isInCart()"
+      [class.btn-add--disabled]="!inStock() || addingCart()"
+      [disabled]="!inStock() || addingCart()"
+      (click)="addToCart()">
+      <ion-icon name="cart-outline" *ngIf="!addingCart()"></ion-icon>
+      <ion-spinner name="crescent" *ngIf="addingCart()" class="btn-spinner"></ion-spinner>
+      {{ addingCart() ? 'Agregando…' : (inStock() ? 'Agregar al carrito' : 'Agotado') }}
+    </button>
+
+  </div>
+</ion-footer>

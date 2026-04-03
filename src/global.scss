@@ -35,3 +35,50 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+
+// Definimos los colores y fuentes de la APP
+:root {
+  --rose-light:  #ecb7c7;
+  --rose-mid:    #c794a4;
+  --navy:        #1B1B1C;
+  --navy-light:  #243547;
+  --cream:       #fdf8f5;
+  --white:       #ffffff;
+  --text-main:   #1A2B3C;
+  --text-muted:  #7a8b9a;
+  --radius-card: 16px;
+  --radius-chip: 24px;
+  --shadow-card: 0 4px 20px rgba(26, 43, 60, 0.10);
+  --shadow-lift: 0 8px 32px rgba(26, 43, 60, 0.16);
+  --infinity-font:          'Marcellus SC', serif;
+  --infinity-font-alt:      'Lora', serif;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family:  var(--infinity-font);
+}
+
+p{
+    font-family: var(--infinity-font-alt);
+}
+
+// ─── Logo ─────────────────────────────────────────────────
+.logo-app {
+  width: 96px;
+  
+  object-fit: contain;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  --background: var(--rose-mid);
+  --color: white;
+  font-size: 9px;
+  min-width: 16px;
+  height: 16px;
+  padding: 3px;
+  border-radius: 8px;
+}

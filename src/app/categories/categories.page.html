@@ -1,0 +1,91 @@
+<ion-header class="infinity-header ion-no-border">
+  <ion-toolbar>
+    <div class="header-inner">
+      <!-- Logo / Nombre -->
+      <div class="brand">
+        <!--
+        <span class="brand-symbol">✦</span>
+        <span class="brand-name">Infinity</span>
+        -->
+        <img src="../../assets/img/logo_web_alt.png" alt="Logo Infinity" srcset="" class="logo-app">
+      </div>
+
+      <!-- Acciones -->
+      <div class="header-actions">
+        <!--
+        <ion-button fill="clear" class="icon-btn" [routerLink]="['/search']">
+          <ion-icon name="search-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        -->
+        <ion-button fill="clear" class="icon-btn cart-btn" [routerLink]="['/cart']">
+          <ion-icon name="cart-outline" slot="icon-only"></ion-icon>
+          @if (cartCount() > 0) {
+            <ion-badge class="cart-badge">{{ cartCount() }}</ion-badge>
+          }
+        </ion-button>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="infinity-content">
+
+  <div class="title ion-padding">
+    <h2>Categorias</h2>
+    <p routerLink="/home" routerDirection="back">Regresar</p>
+  </div>
+
+  <!-- Skeleton categorías -->
+      @if (loadingCats()) {
+        @for (s of skeletonItems; track $index) {
+          <div class="categories-grid">
+            <div class="category-card skeleton-card" *ngFor="let i of [1,2,3,4,5,6]">
+              <ion-skeleton-text animated class="skeleton-img"></ion-skeleton-text>
+              <div class="card-label">
+                <ion-skeleton-text animated style="width:70%;height:13px;border-radius:4px;"></ion-skeleton-text>
+                <ion-skeleton-text animated style="width:40%;height:11px;border-radius:4px;margin-top:5px;"></ion-skeleton-text>
+              </div>
+            </div>
+          </div>
+        }
+      }
+  
+  <!-- Categorías reales -->
+      @if (!loadingCats()) {
+          <!---->
+          <div class="categories-grid">
+            @for (cat of categories(); track cat.id) {
+
+              <div
+                class="category-card"
+                [routerLink]="['/category', cat.id, cat.name]"
+                routerDirection="forward"
+              >
+                <!-- Imagen de fondo -->
+                <div class="card-img-wrapper">
+                  <img
+                    *ngIf="cat.image"
+                    [src]="cat.image.src"
+                    [alt]="cat.name"
+                    class="card-img"
+                  />
+                  <div class="card-img no-image" *ngIf="!cat.image">
+                    <ion-icon name="grid-outline"></ion-icon>
+                  </div>
+                  <div class="card-overlay"></div>
+                </div>
+
+                <!-- Info sobre la imagen -->
+                <div class="card-label">
+                  <h3 class="card-name">{{ cat.name }}</h3>
+                  <span class="card-count">{{ cat.count }} producto{{ cat.count !== 1 ? 's' : '' }}</span>
+                </div>
+              </div>
+        
+
+            }
+    
+          </div>
+      }    
+
+</ion-content>
