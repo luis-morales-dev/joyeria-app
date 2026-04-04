@@ -51,12 +51,21 @@ export class HomePage implements OnInit {
   // Skeleton placeholders
   readonly skeletonItems = Array(4).fill(0);
 
+  // Arreglo de productos para mostrar en el home
+  public categoriasHome: any[] = [];
+  public categoriaActiva: number | null = null;
+  public isLoadingCategorias = true;
+  public productos: any[] = [];
+
   constructor() {
     addIcons({ cartOutline, searchOutline, heartOutline, starSharp });
   }
 
   ngOnInit(): void {
     this.loadData();
+
+    this.cargarProductosHome();
+    this.cargarcategoriasHome();
   }
 
   // ─── Carga de datos ─────────────────────────────────────
@@ -77,6 +86,30 @@ export class HomePage implements OnInit {
         console.error('Error cargando categorías:', err);
         this.loadingCats.set(false);
         this.showToast('No se pudieron cargar las categorías');
+      },
+    });
+  }
+
+  cargarProductosHome() {
+    this.woo.getProductsHome().subscribe({
+      next: (res) => {
+        this.productos = res;
+      },
+      error: (err) => {
+        console.error('Error cargando productos para home:', err);
+        this.showToast('No se pudieron cargar los productos para la página de inicio');
+      },
+    });
+  }
+
+  cargarcategoriasHome(){
+    this.woo.getCategoriasHome().subscribe({
+      next: (res:any) => {
+        this.categoriasHome = res;
+      },
+      error: (err:any) => {
+        console.error('Error cargando categorías para home:', err);
+        this.showToast('No se pudieron cargar las categorías para la página de inicio');
       },
     });
   }

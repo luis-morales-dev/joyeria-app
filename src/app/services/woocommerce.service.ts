@@ -78,6 +78,14 @@ export class WoocommerceService {
       );
   }
 
+  /** Obtiene productos para la página de inicio (ej. últimos 6 productos) */
+  getProductsHome(): Observable<WCProduct[]> {
+    const params = this.authParams.set('per_page', 6).set('orderby', 'date').set('order', 'desc');
+    return this.http
+      .get<WCProduct[]>(`${this.apiUrl}/products`, { params })
+      .pipe(catchError(this.handleError));
+  }
+
   /** Obtiene un producto por ID */
   getProduct(id: number): Observable<WCProduct> {
     return this.http
@@ -129,6 +137,12 @@ export class WoocommerceService {
     return this.http
       .get<WCCategory[]>(`${this.apiUrl}/products/categories`, { params })
       .pipe(catchError(this.handleError));
+  }
+
+  /** Obtiene categorías para la página de inicio */
+  getCategoriasHome() {
+    let params = this.authParams;
+    return this.http.get(`${this.apiUrl}/products/categories`, { params });
   }
 
   /** Obtiene una categoría por ID */

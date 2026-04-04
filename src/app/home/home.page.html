@@ -129,7 +129,7 @@
 
   <!-- ═══════════════════════════════════════════════════════
        CATEGORÍAS
-       ═══════════════════════════════════════════════════════ -->
+       ═══════════════════════════════════════════════════════ --
   <section class="section categories-section">
     <header class="section-header">
       <h2 class="section-title">Categorías</h2>
@@ -138,7 +138,7 @@
 
     <div class="categories-scroll">
 
-      <!-- Chip "Todas" -->
+      <!-- Chip "Todas" --
       <button
         class="cat-chip"
         [class.cat-chip--active]="activeCategory() === null"
@@ -146,7 +146,7 @@
         Todas
       </button>
 
-      <!-- Skeleton categorías -->
+      <!-- Skeleton categorías --
       @if (loadingCats()) {
         @for (s of skeletonItems; track $index) {
           <div class="cat-chip cat-chip--skeleton">
@@ -155,7 +155,7 @@
         }
       }
 
-      <!-- Categorías reales -->
+      <!-- Categorías reales --
       @if (!loadingCats()) {
         @for (cat of categories(); track cat.id) {
           <button
@@ -171,10 +171,61 @@
       }
     </div>
   </section>
+  -->
 
-  <!-- ═══════════════════════════════════════════════════════
-       PRODUCTOS DESTACADOS
-       ═══════════════════════════════════════════════════════ -->
+  <!-- Categorías como Chips -->
+   <div class="section-header ion-padding-horizontal">
+    <h2 class="section-title">Categorías</h2>
+    <a class="section-link" [routerLink]="['/categories']">Ver todas</a>
+   </div>
+    <div class="categories-scroll ion-padding-start">
+    <div
+      class="category-chip"
+      *ngFor="let cat of categoriasHome"
+      [routerLink]="['/category', cat.id]"
+      [class.active]="categoriaActiva === cat.id"
+      (click)="categoriaActiva = cat.id"
+    >
+      <div class="chip-icon">
+        <!-- WooCommerce devuelve categoria.image.src, no paht_img -->
+        <img *ngIf="cat.image" [src]="cat.image.src" [alt]="cat.name" />
+        <ion-icon *ngIf="!cat.image" name="grid-outline"></ion-icon>
+      </div>
+      <!-- WooCommerce usa .name, no .titulo -->
+      <span class="chip-label">{{ cat.name }}</span>
+    </div>
+  </div>
+
+  <!-- Productos para la página de inicio -->
+  <div class="section products-section">
+    <header class="section-header">
+      <h2 class="section-title">Novedades</h2>
+      <a class="section-link" [routerLink]="['/categories']">Ver todo</a>
+    </header>
+
+    <div class="products-grid">
+      @for (prod of productos; track prod.id) {
+        <div class="product-card" [routerLink]="['/product', prod.id]">
+          <div class="card-img-wrap">
+            <img
+              [src]="getProductImage(prod)"
+              [alt]="prod.name"
+              class="card-img"
+              loading="lazy"
+            />
+          </div>
+          <div class="card-body">
+            <p class="card-name">{{ prod.name }}</p>
+            <div class="card-price-row">
+              <span class="price-current">{{ formatPrice(prod.price) }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+
   <section class="section products-section">
     <header class="section-header">
       <h2 class="section-title">Destacados</h2>

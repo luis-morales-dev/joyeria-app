@@ -295,6 +295,11 @@
   }
 }
 
+.field-input--textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
 .field-error {
   font-size: 11px;
   color: var(--danger);
@@ -302,13 +307,6 @@
 }
 
 // ─── Métodos de pago ──────────────────────────────────────────
-.payment-options {
-  padding: 0 16px 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
 .payment-option {
   display: flex;
   align-items: center;
@@ -387,6 +385,29 @@
 
 .payment-option--active .payment-radio-dot {
   background: var(--navy);
+}
+
+.section .payment-option {
+  width: calc(100% - 32px);
+  margin: 0 16px 0;
+}
+
+.payment-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 18px 18px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(236, 183, 199, 0.18);
+  color: var(--navy);
+  font-size: 12px;
+
+  ion-icon {
+    font-size: 16px;
+    color: var(--rose-mid);
+    flex-shrink: 0;
+  }
 }
 
 // ─── Footer ──────────────────────────────────────────────────
