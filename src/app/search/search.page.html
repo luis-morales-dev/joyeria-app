@@ -1,0 +1,216 @@
+<!--
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>search</ion-title>
+  </ion-toolbar>
+</ion-header>
+-->
+
+<!-- ============================================================
+     src/app/pages/search/search.page.html
+     ============================================================ -->
+
+<ion-header class="infinity-header ion-no-border">
+  <ion-toolbar>
+    <div class="header-inner">
+
+      <ion-button fill="clear" class="btn-back" (click)="goBack()">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+
+      <!-- Campo de búsqueda -->
+      <div class="search-wrap">
+        <ion-icon name="search-outline" class="search-icon-left"></ion-icon>
+
+        <input
+          class="search-input"
+          type="search"
+          placeholder="Buscar joyas..."
+          [(ngModel)]="inputValue"
+          (keyup.enter)="onSearch()"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+          enterkeyhint="search"
+        />
+
+        <button
+          class="btn-clear"
+          *ngIf="inputValue.length > 0"
+          (click)="clearSearch()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <!-- Botón buscar -->
+      <button class="btn-search" (click)="onSearch()">
+        Buscar
+      </button>
+
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="infinity-content">
+
+  <!-- ═══════════════════════════════════════════════════════
+       ESTADO INICIAL — CATEGORÍAS SUGERIDAS
+       ═══════════════════════════════════════════════════════ -->
+  <ng-container *ngIf="!hasSearched()">
+
+    <div class="suggestions-section">
+      <p class="suggestions-label">Explorar por categoría</p>
+
+      <!-- Skeleton -->
+      <div class="categories-grid" *ngIf="loadingCats()">
+        <div class="cat-card cat-card--skeleton" *ngFor="let s of skeletonItems">
+          <ion-skeleton-text animated class="skeleton-cat"></ion-skeleton-text>
+        </div>
+      </div>
+
+      <!-- Grid de categorías -->
+      <div class="categories-grid" *ngIf="!loadingCats()">
+        <button
+          class="cat-card"
+          *ngFor="let cat of categories(); trackBy: trackByCat"
+          (click)="searchByCategory(cat)">
+
+          <!-- Imagen de fondo si existe -->
+          <div class="cat-card-bg">
+            <img
+              *ngIf="getCategoryImage(cat)"
+              [src]="getCategoryImage(cat)"
+              [alt]="cat.name"
+              class="cat-card-img"
+            />
+            <div class="cat-card-overlay"></div>
+          </div>
+
+          <span class="cat-card-name">{{ cat.name }}</span>
+          <span class="cat-card-count" *ngIf="cat.count > 0">
+            {{ cat.count }} productos
+          </span>
+
+        </button>
+      </div>
+    </div>
+
+  </ng-container>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SKELETON DE RESULTADOS
+       ═══════════════════════════════════════════════════════ -->
+  <ng-container *ngIf="hasSearched() && searching()">
+    <div class="results-header">
+      <ion-skeleton-text animated style="width:160px; height:13px; border-radius:6px;"></ion-skeleton-text>
+    </div>
+    <div class="results-grid">
+      <div class="product-card product-card--skeleton" *ngFor="let s of skeletonItems">
+        <div class="card-img-wrap">
+          <ion-skeleton-text animated class="skeleton-img"></ion-skeleton-text>
+        </div>
+        <div class="card-body">
+          <ion-skeleton-text animated style="width:80%; height:13px; margin-bottom:6px;"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width:50%; height:12px;"></ion-skeleton-text>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SIN RESULTADOS
+       ═══════════════════════════════════════════════════════ -->
+  <div
+    class="empty-state"
+    *ngIf="hasSearched() && !searching() && results().length === 0">
+    <div class="empty-icon-wrap">
+      <ion-icon name="search-outline" class="empty-icon"></ion-icon>
+    </div>
+    <h2 class="empty-title">Sin resultados</h2>
+    <p class="empty-sub">
+      No encontramos productos para
+      <strong>"{{ query() }}"</strong>
+    </p>
+    <p class="empty-tip">Intenta con otro término o explora por categoría</p>
+    <button class="btn-clear-search" (click)="clearSearch()">
+      Ver categorías
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       RESULTADOS
+       ═══════════════════════════════════════════════════════ -->
+  <ng-container *ngIf="hasSearched() && !searching() && results().length > 0">
+
+    <!-- Header de resultados -->
+    <div class="results-header">
+      <span class="results-count">
+        {{ totalResults() }} resultado{{ totalResults() !== 1 ? 's' : '' }} para
+      </span>
+      <span class="results-query">"{{ query() }}"</span>
+    </div>
+
+    <!-- Grid -->
+    <div class="results-grid">
+      <div
+        class="product-card"
+        *ngFor="let product of results(); trackBy: trackByProduct"
+        (click)="goToProduct(product.id)">
+
+        <div class="card-img-wrap">
+          <img
+            [src]="getProductImage(product)"
+            [alt]="product.name"
+            class="card-img"
+            loading="lazy"
+          />
+
+          <span class="badge-discount" *ngIf="hasDiscount(product)">
+            −{{ discountPercent(product) }}%
+          </span>
+
+          <button class="btn-wishlist" (click)="$event.stopPropagation()">
+            <ion-icon name="heart-outline"></ion-icon>
+          </button>
+
+          <div class="out-of-stock-overlay" *ngIf="product.stock_status !== 'instock'">
+            <span>Agotado</span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <p class="card-name">{{ product.name }}</p>
+
+          <div class="card-rating" *ngIf="+product.average_rating > 0">
+            <ion-icon name="star-sharp" class="star-icon"></ion-icon>
+            <span>{{ product.average_rating }}</span>
+            <span class="rating-count">({{ product.rating_count }})</span>
+          </div>
+
+          <div class="card-price-row">
+            <div class="card-prices">
+              <span class="price-current">{{ formatPrice(product.price) }}</span>
+              <span class="price-regular" *ngIf="hasDiscount(product)">
+                {{ formatPrice(product.regular_price) }}
+              </span>
+            </div>
+
+            <button
+              class="btn-add"
+              [class.btn-add--added]="isInCart(product.id)"
+              [disabled]="product.stock_status !== 'instock'"
+              (click)="addToCart(product, $event)">
+              <span *ngIf="!isInCart(product.id)">+</span>
+              <span *ngIf="isInCart(product.id)">✓</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </ng-container>
+
+  <div style="height: 32px;"></div>
+
+</ion-content>
