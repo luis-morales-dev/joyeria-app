@@ -1,3 +1,125 @@
-<ion-app>
+<!--<ion-app>
   <ion-router-outlet></ion-router-outlet>
+</ion-app>-->
+
+<!-- ============================================================
+     src/app/app.component.html
+     ============================================================ -->
+
+<ion-app>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SIDE MENU
+       ═══════════════════════════════════════════════════════ -->
+  <ion-menu contentId="main-content" menuId="main-menu" side="start" class="infinity-menu">
+
+    <!-- Cabecera del menú -->
+    <ion-header class="menu-header ion-no-border">
+      <div class="menu-brand">
+        <!--
+        <div class="menu-brand-icon">✦</div>
+        <div class="menu-brand-text">
+          <span class="menu-brand-name">Infinity</span>
+          <span class="menu-brand-tag">Joyería artesanal</span>
+        </div>
+        -->
+        <div class="brand">
+        <img src="../../assets/img/logo_web_alt.png" alt="Logo Infinity" srcset="" class="logo-app">
+      </div>
+      </div>
+
+      <!-- Info del usuario si está autenticado -->
+      <div class="menu-user" *ngIf="isAuthenticated()">
+        <div class="menu-avatar">
+          {{ getUserInitial() }}
+        </div>
+        <div class="menu-user-info">
+          <span class="menu-user-name">{{ getUserName() }}</span>
+          <span class="menu-user-email">{{ getUserEmail() }}</span>
+        </div>
+      </div>
+
+    </ion-header>
+
+    <ion-content class="menu-content">
+
+      <!-- ── Navegación principal ─────────────────────────── -->
+      <div class="menu-section">
+        <p class="menu-section-label">Tienda</p>
+
+        <ion-menu-toggle auto-hide="false" *ngFor="let page of mainPages">
+          <div
+            class="menu-item"
+            [class.menu-item--active]="isActivePage(page.url)"
+            (click)="navigate(page.url)">
+            <div class="menu-item-icon">
+              <ion-icon [name]="page.icon"></ion-icon>
+            </div>
+            <span class="menu-item-label">{{ page.title }}</span>
+            <ion-badge
+              class="menu-badge"
+              *ngIf="page.url === '/cart' && cartCount() > 0">
+              {{ cartCount() }}
+            </ion-badge>
+          </div>
+        </ion-menu-toggle>
+      </div>
+
+      <!-- ── Cuenta (solo autenticado) ───────────────────── -->
+      <div class="menu-section" *ngIf="isAuthenticated()">
+        <p class="menu-section-label">Mi cuenta</p>
+
+        <ion-menu-toggle auto-hide="false" *ngFor="let page of accountPages">
+          <div
+            class="menu-item"
+            [class.menu-item--active]="isActivePage(page.url)"
+            (click)="navigate(page.url)">
+            <div class="menu-item-icon">
+              <ion-icon [name]="page.icon"></ion-icon>
+            </div>
+            <span class="menu-item-label">{{ page.title }}</span>
+          </div>
+        </ion-menu-toggle>
+      </div>
+
+      <!-- ── Sin sesión ───────────────────────────────────── -->
+      <div class="menu-section" *ngIf="!isAuthenticated()">
+        <p class="menu-section-label">Cuenta</p>
+        <ion-menu-toggle auto-hide="false">
+          <div class="menu-item" (click)="navigate('/login')">
+            <div class="menu-item-icon">
+              <ion-icon name="log-in-outline"></ion-icon>
+            </div>
+            <span class="menu-item-label">Iniciar sesión</span>
+          </div>
+        </ion-menu-toggle>
+        <ion-menu-toggle auto-hide="false">
+          <div class="menu-item" (click)="navigate('/register')">
+            <div class="menu-item-icon">
+              <ion-icon name="person-add-outline"></ion-icon>
+            </div>
+            <span class="menu-item-label">Crear cuenta</span>
+          </div>
+        </ion-menu-toggle>
+      </div>
+
+    </ion-content>
+
+    <!-- Footer del menú: cerrar sesión -->
+    <ion-footer class="menu-footer ion-no-border" *ngIf="isAuthenticated()">
+      <ion-menu-toggle auto-hide="false">
+        <button class="btn-logout" (click)="logout()">
+          <ion-icon name="log-out-outline"></ion-icon>
+          <span>Cerrar sesión</span>
+        </button>
+      </ion-menu-toggle>
+    </ion-footer>
+
+  </ion-menu>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+       ═══════════════════════════════════════════════════════ -->
+  <ion-router-outlet id="main-content"></ion-router-outlet>
+
 </ion-app>

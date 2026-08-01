@@ -11,6 +11,7 @@ export const environment = {
   stripePublishableKey: 'pk_test_51SL69ZQ12TgXLZukl9DEjAsWs4jHsoInwVxHXRTE9LKYLGqD5EWwkRuWgAjA0QpgtxE4uaGWqPwTwxm1a3fJvJBN00A6bySDNI',
   stripeMerchantDisplayName: 'Joyeria Infinity',
   stripeReturnUrl:    'joyeriaapp://stripe-redirect',
+  jwtApiUrl:          'https://joyeriainfinity.com.mx/wp-json/jwt-auth/v1',
 };
 
 /*

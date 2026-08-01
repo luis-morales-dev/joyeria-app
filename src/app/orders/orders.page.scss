@@ -1,0 +1,272 @@
+// ============================================================
+// src/app/pages/orders/orders.page.scss
+// ============================================================
+
+
+// ─── Header ──────────────────────────────────────────────────
+.infinity-header ion-toolbar {
+  --background: var(--navy);
+  --border-width: 0;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+}
+
+.menu-btn {
+  --color: var(--rose-light);
+  font-size: 22px;
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--infinity-font);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.5px;
+}
+
+.brand-sym { color: var(--rose-light); font-size: 13px; }
+
+// ─── Contenido ───────────────────────────────────────────────
+.infinity-content {
+  --background: var(--cream);
+  font-family: var(--infinity-font-alt);
+}
+
+// ─── Contador ────────────────────────────────────────────────
+.list-count {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 18px 16px 10px;
+  margin: 0;
+}
+
+// ─── Lista ───────────────────────────────────────────────────
+.orders-list {
+  padding: 8px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeUp 0.35s ease both;
+}
+
+// ─── Card de pedido ──────────────────────────────────────────
+.order-card {
+  background: var(--white);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.15s;
+
+  &:active { transform: scale(0.98); }
+
+  &--skeleton {
+    pointer-events: none;
+    overflow: hidden;
+
+    .skeleton-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .skeleton-body {
+      flex: 1;
+    }
+  }
+}
+
+// ─── Imagen ──────────────────────────────────────────────────
+.order-img-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f5eeee;
+  flex-shrink: 0;
+}
+
+.order-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.order-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(236, 183, 199, 0.15);
+
+  ion-icon {
+    font-size: 26px;
+    color: var(--rose-mid);
+    opacity: 0.6;
+  }
+}
+
+// ─── Info ────────────────────────────────────────────────────
+.order-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.order-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.order-number {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.order-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+
+  ion-icon { font-size: 11px; }
+}
+
+.order-date {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.order-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.order-items {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.order-total {
+  font-family: var(--infinity-font);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.order-arrow {
+  font-size: 16px;
+  color: var(--rose-mid);
+  flex-shrink: 0;
+}
+
+// ─── Estado vacío ─────────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 70px 32px 40px;
+  text-align: center;
+  animation: fadeUp 0.35s ease both;
+}
+
+.empty-icon-wrap {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: rgba(236, 183, 199, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+
+.empty-icon-lg {
+  font-size: 40px;
+  color: var(--rose-mid);
+}
+
+.empty-icon {
+  font-size: 32px;
+  color: var(--rose-light);
+  opacity: 0.4;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.empty-title {
+  font-family: var(--infinity-font);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 10px;
+}
+
+.empty-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0 0 28px;
+  line-height: 1.5;
+}
+
+.btn-shop {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--navy);
+  color: var(--rose-light);
+  border: none;
+  padding: 13px 28px;
+  border-radius: 32px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+
+  ion-icon { font-size: 18px; }
+  &:active { opacity: 0.85; }
+}
+
+.btn-retry {
+  background: var(--navy);
+  color: var(--rose-light);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 28px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+// ─── Animaciones ─────────────────────────────────────────────
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

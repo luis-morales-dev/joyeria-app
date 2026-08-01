@@ -1,0 +1,299 @@
+// ============================================================
+// src/app/pages/login/login.page.scss
+// ============================================================
+
+
+// ─── Contenido ───────────────────────────────────────────────
+.infinity-content {
+  --background: var(--navy);
+  font-family: var(--infinity-font-alt);
+}
+
+// ─── Fondo decorativo ────────────────────────────────────────
+.bg-deco {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+
+  &--1 {
+    width: 280px;
+    height: 280px;
+    background: var(--rose-mid);
+    opacity: 0.18;
+    top: -80px;
+    right: -60px;
+  }
+
+  &--2 {
+    width: 200px;
+    height: 200px;
+    background: var(--rose-light);
+    opacity: 0.10;
+    bottom: 40px;
+    left: -60px;
+  }
+}
+
+.bg-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(236,183,199,0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+// ─── Layout ──────────────────────────────────────────────────
+.page-inner {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px 40px;
+  gap: 24px;
+}
+
+// ─── Marca ───────────────────────────────────────────────────
+.brand-block {
+  text-align: center;
+  animation: fadeDown 0.5s ease both;
+}
+
+.brand-symbol {
+  font-size: 28px;
+  color: var(--rose-light);
+  line-height: 1;
+  margin-bottom: 6px;
+  display: block;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.brand-name {
+  font-family: var(--infinity-font);
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.brand-tagline {
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin: 0;
+  font-weight: 600;
+}
+
+// ─── Card del formulario ─────────────────────────────────────
+.form-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--white);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 28px 24px 32px;
+  animation: fadeUp 0.5s ease 0.1s both;
+}
+
+.form-header {
+  margin-bottom: 24px;
+}
+
+.form-title {
+  font-family: var(--infinity-font);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--navy);
+  margin: 0 0 4px;
+}
+
+.form-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+// ─── Campos ──────────────────────────────────────────────────
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  border: 1.5px solid rgba(199, 148, 164, 0.3);
+  border-radius: 12px;
+  background: #fdf8f5;
+  padding: 0 14px;
+  height: 50px;
+  gap: 10px;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:focus-within {
+    border-color: var(--rose-mid);
+    background: var(--white);
+  }
+
+  &--error {
+    border-color: var(--danger);
+  }
+}
+
+.input-icon {
+  font-size: 18px;
+  color: var(--rose-mid);
+  flex-shrink: 0;
+}
+
+.field-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  font-family: var(--infinity-font-alt);
+  color: var(--text-main);
+  min-width: 0;
+
+  &::placeholder { color: #ccc; }
+}
+
+.btn-eye {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: color 0.2s;
+
+  &:active { color: var(--rose-mid); }
+}
+
+.field-error {
+  font-size: 11px;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+// ─── Botón submit ─────────────────────────────────────────────
+.btn-submit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--navy);
+  color: var(--rose-light);
+  font-size: 15px;
+  font-weight: 800;
+  padding: 15px 24px;
+  border-radius: 32px;
+  border: none;
+  cursor: pointer;
+  margin-top: 8px;
+  letter-spacing: 0.3px;
+  transition: opacity 0.2s, transform 0.15s;
+
+  &:active {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+
+  &--loading {
+    opacity: 0.75;
+    cursor: not-allowed;
+  }
+
+  .btn-arrow {
+    font-size: 16px;
+    transition: transform 0.2s;
+  }
+
+  &:hover .btn-arrow {
+    transform: translateX(4px);
+  }
+
+  .btn-spinner {
+    width: 18px;
+    height: 18px;
+    --color: var(--rose-light);
+  }
+}
+
+// ─── Ir a registro ────────────────────────────────────────────
+.alt-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  animation: fadeUp 0.5s ease 0.2s both;
+}
+
+.alt-text {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  margin: 0;
+}
+
+.btn-alt {
+  background: none;
+  border: none;
+  color: var(--rose-light);
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0;
+  letter-spacing: 0.3px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:active { opacity: 0.7; }
+}
+
+// ─── Animaciones ─────────────────────────────────────────────
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.7; transform: scale(1.1); }
+}

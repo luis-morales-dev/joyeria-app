@@ -1,0 +1,105 @@
+<!-- ============================================================
+     src/app/pages/onboarding/onboarding.page.html
+     ============================================================
+     Migrado de <ion-slides> a <swiper-container> (Swiper Element)
+     ============================================================ -->
+
+<ion-content class="infinity-content" [fullscreen]="true">
+
+  <!-- Fondo decorativo -->
+  <div class="bg-deco">
+    <div class="bg-dots"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SWIPER CONTAINER
+       Reemplaza a <ion-slides>
+       - #swiperRef     → referencia para llamar métodos nativos
+       - [modules]      → pasa IonicSlides para estilos de Ionic
+       - (swiperslidechange) → evento en minúsculas (sin ionSlide prefix)
+       ═══════════════════════════════════════════════════════ -->
+  <swiper-container
+    #swiperRef
+    [modules]="swiperModules"
+    [initialSlide]="0"
+    [speed]="400"
+    [resistanceRatio]="0.5"
+    (swiperslidechange)="onSlideChange($event)"
+    class="slides-wrap">
+
+    <!-- Cada <swiper-slide> reemplaza a <ion-slide> -->
+    <swiper-slide *ngFor="let slide of slides; let i = index" class="slide">
+
+      <div class="slide-orb slide-orb--1" [style.background]="slide.accent"></div>
+      <div class="slide-orb slide-orb--2" [style.background]="slide.accent"></div>
+
+      <!-- Icono -->
+      <div class="icon-ring" [style.border-color]="slide.accent + '55'">
+        <div class="icon-inner" [style.background]="slide.accent + '22'">
+          <ion-icon [name]="slide.icon" [style.color]="slide.accent"></ion-icon>
+        </div>
+      </div>
+
+      <!-- Texto -->
+      <div class="slide-text">
+        <p class="slide-eyebrow">{{ slide.eyebrow }}</p>
+        <h1 class="slide-title">
+          {{ slide.title }}<br>
+          <em [style.color]="slide.accent">{{ slide.titleItalic }}</em>
+        </h1>
+        <p class="slide-desc">{{ slide.description }}</p>
+      </div>
+
+    </swiper-slide>
+
+  </swiper-container>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CONTROLES INFERIORES
+       ═══════════════════════════════════════════════════════ -->
+  <div class="controls">
+
+    <!-- Dots indicadores -->
+    <div class="dots-row">
+      <button
+        class="dot"
+        *ngFor="let slide of slides; let i = index"
+        [class.dot--active]="activeIndex() === i"
+        [style.background]="activeIndex() === i ? slides[activeIndex()].accent : ''"
+        (click)="goToSlide(i)">
+      </button>
+    </div>
+
+    <div class="buttons-row">
+
+      <!-- Skip -->
+      <button
+        class="btn-skip"
+        *ngIf="!isLastSlide()"
+        (click)="skipOnboarding()">
+        Omitir
+      </button>
+
+      <!-- Siguiente / Comenzar -->
+      <button
+        class="btn-next"
+        [class.btn-next--last]="isLastSlide()"
+        [style.background]="slides[activeIndex()].accent"
+        (click)="nextSlide()">
+
+        <ng-container *ngIf="isLastSlide()">
+          <ion-icon name="checkmark-outline"></ion-icon>
+          <span>Comenzar</span>
+        </ng-container>
+
+        <ng-container *ngIf="!isLastSlide()">
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+        </ng-container>
+
+      </button>
+
+    </div>
+
+  </div>
+
+</ion-content>

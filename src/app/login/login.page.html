@@ -1,0 +1,105 @@
+<!-- ============================================================
+     src/app/pages/login/login.page.html
+     ============================================================ -->
+
+<ion-content class="infinity-content" [fullscreen]="true">
+
+  <!-- Fondo decorativo -->
+  <div class="bg-deco">
+    <div class="bg-orb bg-orb--1"></div>
+    <div class="bg-orb bg-orb--2"></div>
+    <div class="bg-dots"></div>
+  </div>
+
+  <div class="page-inner">
+
+    <!-- ── Logo / Marca ─────────────────────────────────── -->
+    <div class="brand-block">
+      <!--
+        <span class="brand-symbol">✦</span>
+        <span class="brand-name">Infinity</span>
+        <p class="brand-tagline">Joyería artesanal</p>
+        -->
+        <img src="../../assets/img/logo_web_alt.png" alt="Logo Infinity" srcset="" class="logo-app">
+    </div>
+
+    <!-- ── Card del formulario ───────────────────────────── -->
+    <div class="form-card">
+
+      <div class="form-header">
+        <h2 class="form-title">Iniciar sesión</h2>
+        <p class="form-sub">Bienvenida de vuelta</p>
+      </div>
+
+      <form [formGroup]="form" class="form-fields" (ngSubmit)="login()">
+
+        <!-- Email -->
+        <div class="field-wrap" [class.field-wrap--error]="isInvalid('email')">
+          <label class="field-label">Correo electrónico</label>
+          <div class="input-wrap" [class.input-wrap--error]="isInvalid('email')">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <input
+              class="field-input"
+              type="email"
+              formControlName="email"
+              placeholder="maria@ejemplo.com"
+              autocomplete="email"
+              inputmode="email"
+            />
+          </div>
+          <span class="field-error" *ngIf="isInvalid('email')">
+            {{ getError('email') }}
+          </span>
+        </div>
+
+        <!-- Contraseña -->
+        <div class="field-wrap" [class.field-wrap--error]="isInvalid('password')">
+          <label class="field-label">Contraseña</label>
+          <div class="input-wrap" [class.input-wrap--error]="isInvalid('password')">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <input
+              class="field-input"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            />
+            <button type="button" class="btn-eye" (click)="togglePassword()">
+              <ion-icon [name]="showPassword() ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+            </button>
+          </div>
+          <span class="field-error" *ngIf="isInvalid('password')">
+            {{ getError('password') }}
+          </span>
+        </div>
+
+        <!-- Botón login -->
+        <button
+          type="submit"
+          class="btn-submit"
+          [class.btn-submit--loading]="loading()"
+          [disabled]="loading()"
+          (click)="login()">
+          <ion-spinner name="crescent" *ngIf="loading()" class="btn-spinner"></ion-spinner>
+          <span *ngIf="!loading()">
+            Iniciar sesión
+            <ion-icon name="arrow-forward-outline" class="btn-arrow"></ion-icon>
+          </span>
+          <span *ngIf="loading()">Iniciando sesión…</span>
+        </button>
+
+      </form>
+
+    </div>
+
+    <!-- ── Ir a registro ─────────────────────────────────── -->
+    <div class="alt-action">
+      <p class="alt-text">¿No tienes cuenta?</p>
+      <button class="btn-alt" (click)="goToRegister()">
+        Crear cuenta
+      </button>
+    </div>
+
+  </div>
+
+</ion-content>

@@ -1,0 +1,117 @@
+<!-- ============================================================
+     src/app/pages/orders/orders.page.html
+     ============================================================ -->
+
+<ion-header class="infinity-header ion-no-border">
+  <ion-toolbar>
+    <div class="header-inner">
+      <ion-menu-button class="menu-btn" color="rose"></ion-menu-button>
+      <div class="header-title">
+        <span class="brand-sym">✦</span>
+        <span>Mis Pedidos</span>
+      </div>
+      <div style="width:40px;"></div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="infinity-content">
+
+  <!-- ═══════════════════════════════════════════════════════
+       SKELETON
+       ═══════════════════════════════════════════════════════ -->
+  <div class="orders-list" *ngIf="loading()">
+    <div class="order-card order-card--skeleton" *ngFor="let s of skeletonItems">
+      <ion-skeleton-text animated class="skeleton-img"></ion-skeleton-text>
+      <div class="skeleton-body">
+        <ion-skeleton-text animated style="width:60%; height:13px; margin-bottom:8px;"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width:40%; height:11px; margin-bottom:6px;"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width:80%; height:11px;"></ion-skeleton-text>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       ERROR
+       ═══════════════════════════════════════════════════════ -->
+  <div class="empty-state" *ngIf="!loading() && error()">
+    <span class="empty-icon">✦</span>
+    <p class="empty-title">Ocurrió un error</p>
+    <p class="empty-sub">{{ error() }}</p>
+    <button class="btn-retry" (click)="loadOrders()">Reintentar</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       ESTADO VACÍO
+       ═══════════════════════════════════════════════════════ -->
+  <div class="empty-state" *ngIf="!loading() && !error() && orders().length === 0">
+    <div class="empty-icon-wrap">
+      <ion-icon name="receipt-outline" class="empty-icon-lg"></ion-icon>
+    </div>
+    <p class="empty-title">Sin pedidos aún</p>
+    <p class="empty-sub">Cuando realices una compra, tus pedidos aparecerán aquí</p>
+    <button class="btn-shop" (click)="goToShop()">
+      <ion-icon name="cart-outline"></ion-icon>
+      Ir a la tienda
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       LISTA DE PEDIDOS
+       ═══════════════════════════════════════════════════════ -->
+  <div class="orders-list" *ngIf="!loading() && !error() && orders().length > 0">
+
+    <p class="list-count">{{ orders().length }} pedido{{ orders().length !== 1 ? 's' : '' }}</p>
+
+    <div
+      class="order-card"
+      *ngFor="let order of orders(); trackBy: trackByOrder"
+      (click)="goToDetail(order.id!)">
+
+      <!-- Imagen del primer producto -->
+      <div class="order-img-wrap">
+        <img
+          *ngIf="getFirstImage(order)"
+          [src]="getFirstImage(order)"
+          [alt]="'Pedido #' + order.id"
+          class="order-img"
+        />
+        <div class="order-img-placeholder" *ngIf="!getFirstImage(order)">
+          <ion-icon name="receipt-outline"></ion-icon>
+        </div>
+      </div>
+
+      <!-- Info del pedido -->
+      <div class="order-info">
+
+        <div class="order-header">
+          <span class="order-number"># {{ order.id }}</span>
+          <span
+            class="order-status"
+            [style.color]="getStatus(order.status).color"
+            [style.background]="getStatus(order.status).color + '18'">
+            <ion-icon [name]="getStatus(order.status).icon"></ion-icon>
+            {{ getStatus(order.status).label }}
+          </span>
+        </div>
+
+        <p class="order-date">{{ formatDate(order.date_created) }}</p>
+
+        <div class="order-footer">
+          <span class="order-items">
+            {{ getItemCount(order) }} {{ getItemCount(order) === 1 ? 'producto' : 'productos' }}
+          </span>
+          <span class="order-total">{{ formatPrice(order.total) }}</span>
+        </div>
+
+      </div>
+
+      <ion-icon name="chevron-forward-outline" class="order-arrow"></ion-icon>
+
+    </div>
+
+  </div>
+
+  <div style="height:32px;"></div>
+
+</ion-content>

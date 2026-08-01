@@ -1,0 +1,224 @@
+// ============================================================
+// src/app/app.component.scss
+// ============================================================
+
+.infinity-menu {
+
+  // ─── Variables ────────────────────────────────────────────
+  --rose-light:  #ecb7c7;
+  --rose-mid:    #c794a4;
+  --navy:        #1B1B1C;
+  --navy-light:  #243547;
+  --cream:       #fdf8f5;
+  --white:       #ffffff;
+  --text-main:   #1A2B3C;
+  --text-muted:  rgba(255,255,255,0.45);
+  --item-active: rgba(236,183,199,0.12);
+
+  // Ancho del menú
+  --width: 280px;
+
+  // ─── Cabecera ─────────────────────────────────────────────
+  .menu-header {
+    background: var(--navy);
+    padding: 48px 20px 20px;
+    border-bottom: 1px solid rgba(236,183,199,0.10);
+  }
+
+  .menu-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .menu-brand-icon {
+    font-size: 20px;
+    color: var(--rose-light);
+    line-height: 1;
+  }
+
+  .menu-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .menu-brand-name {
+    font-family: var(--infinity-font);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .menu-brand-tag {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  // ─── Info del usuario ─────────────────────────────────────
+  .menu-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(236,183,199,0.08);
+    border: 1px solid rgba(236,183,199,0.15);
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .menu-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--rose-mid);
+    color: var(--white);
+    font-family: var(--infinity-font);
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .menu-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .menu-user-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .menu-user-email {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // ─── Contenido ────────────────────────────────────────────
+  .menu-content {
+    --background: var(--navy);
+  }
+
+  // ─── Secciones ────────────────────────────────────────────
+  .menu-section {
+    padding: 20px 12px 8px;
+  }
+
+  .menu-section-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 0 8px;
+    margin: 0 0 8px;
+  }
+
+  // ─── Items del menú ───────────────────────────────────────
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+    margin-bottom: 2px;
+
+    &:active { background: var(--item-active); }
+
+    &--active {
+      background: var(--item-active);
+
+      .menu-item-icon { background: rgba(236,183,199,0.2); }
+      .menu-item-label { color: var(--rose-light); font-weight: 800; }
+      ion-icon { color: var(--rose-light) !important; }
+    }
+  }
+
+  .menu-item-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+
+    ion-icon {
+      font-size: 18px;
+      color: rgba(255,255,255,0.6);
+    }
+  }
+
+  .menu-item-label {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.75);
+    transition: color 0.2s;
+  }
+
+  .menu-badge {
+    --background: var(--rose-mid);
+    --color: white;
+    font-size: 10px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+  }
+
+  // ─── Separador ────────────────────────────────────────────
+  .menu-divider {
+    height: 1px;
+    background: rgba(236,183,199,0.08);
+    margin: 8px 12px;
+  }
+
+  // ─── Footer ───────────────────────────────────────────────
+  .menu-footer {
+    background: var(--navy);
+    border-top: 1px solid rgba(236,183,199,0.10);
+    padding: 12px;
+  }
+
+  .btn-logout {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 10px;
+    border-radius: 12px;
+    border: none;
+    background: rgba(224, 85, 85, 0.10);
+    color: #e05555;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    ion-icon { font-size: 18px; }
+    &:active { background: rgba(224, 85, 85, 0.2); }
+  }
+}
