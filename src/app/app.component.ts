@@ -25,6 +25,7 @@ import {
   receiptOutline, logInOutline, logOutOutline,
   personAddOutline, gridOutline,
 } from 'ionicons/icons';
+import { SplashScreen } from '@capacitor/splash-screen';
 
 import { AuthService } from './services/auth.service';
 import { CartService } from './services/cart.service';
@@ -76,6 +77,9 @@ export class AppComponent {
       .subscribe((e: any) => {
         this.currentUrl = e.urlAfterRedirects;
       });
+
+    this.showSplashScreen();
+      
   }
 
   // ─── Navegación ──────────────────────────────────────────
@@ -107,5 +111,13 @@ export class AppComponent {
   getUserInitial(): string {
     const name = this.getUserName();
     return name ? name.charAt(0).toUpperCase() : '?';
+  }
+
+  // ─── Splash Screen ──────────────────────────────────
+  async showSplashScreen() {
+    await SplashScreen.show({
+      showDuration: 2700,
+      autoHide: true,
+    });
   }
 }
