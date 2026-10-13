@@ -1,20 +1,3 @@
-/*import { Component, OnInit } from '@angular/core';
-
-@Component({
-  selector: 'app-cart',
-  templateUrl: './cart.page.html',
-  styleUrls: ['./cart.page.scss'],
-})
-export class CartPage implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}*/
-
-
 // ============================================================
 // src/app/pages/cart/cart.page.ts
 // ============================================================
@@ -30,44 +13,43 @@ import {
   arrowBackOutline,
   cartOutline,
   chevronForwardOutline,
+  lockClosedOutline,
 } from 'ionicons/icons';
 
 import { CartService } from '../services/cart.service';
+import { AuthService } from '../services/auth.service';
 import { CartItem } from '../models/woocommerce.models';
 
 @Component({
-  selector: 'app-cart',
+  selector:    'app-cart',
   templateUrl: './cart.page.html',
-  styleUrls: ['./cart.page.scss'],
+  styleUrls:   ['./cart.page.scss'],
   standalone: false,
 })
 export class CartPage {
-  private readonly cart  = inject(CartService);
+  private readonly cart   = inject(CartService);
+  private readonly auth   = inject(AuthService);
   private readonly router = inject(Router);
   private readonly alert  = inject(AlertController);
   private readonly toast  = inject(ToastController);
 
-  // ─── Estado del CartService expuesto al template ─────────
-  readonly items        = this.cart.items;
-  readonly isEmpty      = this.cart.isEmpty;
-  readonly totalQty     = this.cart.totalQuantity;
-  readonly subtotal     = this.cart.subtotal;
+  // ─── Estado del CartService ──────────────────────────────
+  readonly items    = this.cart.items;
+  readonly isEmpty  = this.cart.isEmpty;
+  readonly subtotal = this.cart.subtotal;
+  readonly totalQty = this.cart.totalQuantity;
 
-  // Cálculos adicionales
   readonly shipping = computed(() => (this.subtotal() >= 999 ? 0 : 150));
   readonly total    = computed(() => this.subtotal() + this.shipping());
 
-  // Estado de loading para el botón de checkout
-  processingCheckout = signal(false);
+  // ¿El usuario está autenticado?
+  readonly isAuthenticated = computed(() => this.auth.isAuthenticated());
 
   constructor() {
     addIcons({
-      trashOutline,
-      addOutline,
-      removeOutline,
-      arrowBackOutline,
-      cartOutline,
-      chevronForwardOutline,
+      trashOutline, addOutline, removeOutline,
+      arrowBackOutline, cartOutline, chevronForwardOutline,
+      lockClosedOutline,
     });
   }
 
@@ -87,7 +69,7 @@ export class CartPage {
   // ─── Eliminar ítem ───────────────────────────────────────
   async confirmRemove(item: CartItem): Promise<void> {
     const a = await this.alert.create({
-      header: 'Eliminar producto',
+      header:  'Eliminar producto',
       message: `¿Quitar "${item.product.name}" del carrito?`,
       cssClass: 'infinity-alert',
       buttons: [
@@ -108,7 +90,7 @@ export class CartPage {
   // ─── Vaciar carrito ──────────────────────────────────────
   async confirmClear(): Promise<void> {
     const a = await this.alert.create({
-      header: 'Vaciar carrito',
+      header:  'Vaciar carrito',
       message: '¿Eliminar todos los productos del carrito?',
       cssClass: 'infinity-alert',
       buttons: [
@@ -126,8 +108,17 @@ export class CartPage {
     await a.present();
   }
 
-  // ─── Ir a checkout ───────────────────────────────────────
+  // ─── Ir al checkout ──────────────────────────────────────
   goToCheckout(): void {
+    if (!this.auth.isAuthenticated()) {
+      // No tiene sesión → ir al login pasando /checkout como returnUrl
+      // El authGuard del checkout también haría esto, pero es mejor
+      // UX manejarlo aquí para poder mostrar el mensaje de login
+      this.router.navigate(['/login'], {
+        queryParams: { returnUrl: '/checkout' },
+      });
+      return;
+    }
     this.router.navigate(['/checkout']);
   }
 
@@ -155,7 +146,7 @@ export class CartPage {
 
   formatPrice(amount: number): string {
     return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
+      style:    'currency',
       currency: 'MXN',
     }).format(amount);
   }
@@ -165,7 +156,6 @@ export class CartPage {
     return Object.values(item.selectedAttributes).join(' · ');
   }
 
-  // trackBy para el *ngFor
   trackByItem(_: number, item: CartItem): string {
     return `${item.product.id}-${item.variation?.id ?? 0}`;
   }

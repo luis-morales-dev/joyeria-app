@@ -1,25 +1,10 @@
-/*import { Component, OnInit } from '@angular/core';
-
-@Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
-})
-export class LoginPage implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}*/
 // ============================================================
 // src/app/pages/login/login.page.ts
 // ============================================================
 
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
@@ -33,14 +18,15 @@ import {
 import { AuthService } from '../services/auth.service';
 
 @Component({
-  selector: 'app-login',
+  selector:    'app-login',
   templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  styleUrls:   ['./login.page.scss'],
   standalone: false,
 })
 export class LoginPage implements OnInit {
   private readonly fb     = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly route  = inject(ActivatedRoute);
   private readonly auth   = inject(AuthService);
   private readonly toast  = inject(ToastController);
 
@@ -49,16 +35,16 @@ export class LoginPage implements OnInit {
   loading      = signal(false);
   showPassword = signal(false);
 
+  // URL a la que regresar tras el login (ej: /checkout)
+  private returnUrl = '/home';
+
   constructor() {
     addIcons({ eyeOutline, eyeOffOutline, mailOutline, lockClosedOutline, arrowForwardOutline });
   }
 
   ngOnInit(): void {
-    // Si ya está autenticado, redirigir
-    if (this.auth.isAuthenticated()) {
-      this.router.navigate(['/home'], { replaceUrl: true });
-      return;
-    }
+    // Leer el returnUrl del queryParam si existe
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/home';
 
     this.form = this.fb.group({
       email:    ['', [Validators.required, Validators.email]],
@@ -66,7 +52,6 @@ export class LoginPage implements OnInit {
     });
   }
 
-  // ─── Helpers de formulario ───────────────────────────────
   isInvalid(field: string): boolean {
     const ctrl = this.form.get(field);
     return !!(ctrl?.invalid && ctrl?.touched);
@@ -85,7 +70,6 @@ export class LoginPage implements OnInit {
     this.showPassword.update((v) => !v);
   }
 
-  // ─── Login ───────────────────────────────────────────────
   async login(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -99,7 +83,9 @@ export class LoginPage implements OnInit {
     this.auth.login(email, password).subscribe({
       next: () => {
         this.loading.set(false);
-        this.router.navigate(['/home'], { replaceUrl: true });
+        // Regresar a la URL que intentó visitar (ej: /checkout)
+        // o al home si no había returnUrl
+        this.router.navigateByUrl(this.returnUrl, { replaceUrl: true });
       },
       error: (err) => {
         this.loading.set(false);
@@ -112,7 +98,10 @@ export class LoginPage implements OnInit {
   }
 
   goToRegister(): void {
-    this.router.navigate(['/register']);
+    // Pasar el returnUrl al registro también para mantener el flujo
+    this.router.navigate(['/register'], {
+      queryParams: { returnUrl: this.returnUrl },
+    });
   }
 
   private async showToast(message: string): Promise<void> {

@@ -1,26 +1,16 @@
-/*import { Component, OnInit } from '@angular/core';
-
-@Component({
-  selector: 'app-register',
-  templateUrl: './register.page.html',
-  styleUrls: ['./register.page.scss'],
-})
-export class RegisterPage implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}*/
-
 // ============================================================
 // src/app/pages/register/register.page.ts
 // ============================================================
 
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Router } from '@angular/router';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
@@ -34,7 +24,6 @@ import {
 
 import { AuthService } from '../services/auth.service';
 
-// Validador personalizado: las contraseñas coinciden
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password        = control.get('password');
   const confirmPassword = control.get('confirmPassword');
@@ -43,7 +32,6 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
     confirmPassword.setErrors({ mismatch: true });
     return { mismatch: true };
   } else {
-    // Limpiar solo el error de mismatch si existe
     const errors = { ...confirmPassword.errors };
     delete errors['mismatch'];
     confirmPassword.setErrors(Object.keys(errors).length ? errors : null);
@@ -52,33 +40,37 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
 }
 
 @Component({
-  selector: 'app-register',
+  selector:    'app-register',
   templateUrl: './register.page.html',
-  styleUrls: ['./register.page.scss'],
+  styleUrls:   ['./register.page.scss'],
   standalone: false,
 })
 export class RegisterPage implements OnInit {
   private readonly fb     = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly route  = inject(ActivatedRoute);
   private readonly auth   = inject(AuthService);
   private readonly toast  = inject(ToastController);
 
   form!: FormGroup;
 
-  loading          = signal(false);
-  showPassword     = signal(false);
-  showConfirm      = signal(false);
-  registered       = signal(false);
+  loading      = signal(false);
+  showPassword = signal(false);
+  showConfirm  = signal(false);
+
+  // URL a la que regresar tras el registro (ej: /checkout)
+  private returnUrl = '/home';
 
   constructor() {
-    addIcons({ eyeOutline, eyeOffOutline, mailOutline, lockClosedOutline, arrowBackOutline, checkmarkOutline });
+    addIcons({
+      eyeOutline, eyeOffOutline, mailOutline,
+      lockClosedOutline, arrowBackOutline, checkmarkOutline,
+    });
   }
 
   ngOnInit(): void {
-    if (this.auth.isAuthenticated()) {
-      this.router.navigate(['/home'], { replaceUrl: true });
-      return;
-    }
+    // Leer el returnUrl del queryParam si existe
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/home';
 
     this.form = this.fb.group(
       {
@@ -90,7 +82,6 @@ export class RegisterPage implements OnInit {
     );
   }
 
-  // ─── Helpers de formulario ───────────────────────────────
   isInvalid(field: string): boolean {
     const ctrl = this.form.get(field);
     return !!(ctrl?.invalid && ctrl?.touched);
@@ -106,27 +97,23 @@ export class RegisterPage implements OnInit {
     return '';
   }
 
-  // Indicadores de seguridad de contraseña
   getPasswordStrength(): { level: number; label: string; color: string } {
     const val = this.form.get('password')?.value ?? '';
     if (!val) return { level: 0, label: '', color: '' };
-
     let score = 0;
     if (val.length >= 8)          score++;
     if (/[A-Z]/.test(val))        score++;
     if (/[0-9]/.test(val))        score++;
     if (/[^A-Za-z0-9]/.test(val)) score++;
-
     if (score <= 1) return { level: 1, label: 'Débil',    color: '#e05555' };
     if (score === 2) return { level: 2, label: 'Regular',  color: '#f5a623' };
     if (score === 3) return { level: 3, label: 'Buena',    color: '#2e9e6b' };
     return              { level: 4, label: 'Excelente', color: '#1A7A55' };
   }
 
-  togglePassword(): void  { this.showPassword.update((v) => !v); }
-  toggleConfirm(): void   { this.showConfirm.update((v) => !v); }
+  togglePassword(): void { this.showPassword.update((v) => !v); }
+  toggleConfirm():  void { this.showConfirm.update((v) => !v);  }
 
-  // ─── Registro ────────────────────────────────────────────
   async register(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -140,7 +127,8 @@ export class RegisterPage implements OnInit {
     this.auth.register(email, password, '', '').subscribe({
       next: () => {
         this.loading.set(false);
-        this.router.navigate(['/home'], { replaceUrl: true });
+        // Regresar a la URL que intentó visitar (ej: /checkout)
+        this.router.navigateByUrl(this.returnUrl, { replaceUrl: true });
       },
       error: (err) => {
         this.loading.set(false);
@@ -153,7 +141,10 @@ export class RegisterPage implements OnInit {
   }
 
   goToLogin(): void {
-    this.router.navigate(['/login']);
+    // Pasar el returnUrl al login también para mantener el flujo
+    this.router.navigate(['/login'], {
+      queryParams: { returnUrl: this.returnUrl },
+    });
   }
 
   private async showToast(message: string): Promise<void> {
