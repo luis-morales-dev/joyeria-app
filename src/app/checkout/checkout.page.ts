@@ -44,14 +44,18 @@ export class CheckoutPage implements OnInit {
   private readonly toast = inject(ToastController);
   private readonly stripeCheckout = inject(StripeCheckoutService);
 
+  // ─── Carrito (todo calculado en CartService) ─────────────
+  readonly discountPercent = this.cart.discountPercent;
+  readonly discountAmount  = this.cart.discountAmount;
+
   checkoutForm!: FormGroup;
 
   readonly items = this.cart.items;
   readonly subtotal = this.cart.subtotal;
   readonly isEmpty = this.cart.isEmpty;
 
-  readonly shipping = computed(() => (this.subtotal() >= 999 ? 0 : 150));
-  readonly total = computed(() => this.subtotal() + this.shipping());
+  readonly shipping             = this.cart.shipping;
+  readonly total                = this.cart.total;
 
   readonly summaryExpanded = signal(true);
   readonly submitting = signal(false);

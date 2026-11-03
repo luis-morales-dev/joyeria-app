@@ -116,7 +116,8 @@ const routes: Routes = [
     loadChildren: () =>
       import('./checkout/checkout.module')
         .then((m) => m.CheckoutPageModule),
-    canActivate: [authGuard],
+        // sin canActivate: cualquiera puede comprar
+    //canActivate: [authGuard],
   },
   {
     path: 'orders',

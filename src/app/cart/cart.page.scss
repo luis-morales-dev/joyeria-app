@@ -397,6 +397,9 @@
   }
 }
 
+.summary-value--discount { color: #2e9e6b; font-weight: 800; }  // cart
+.total-value--discount   { color: #2e9e6b; font-weight: 800; }  // checkout
+
 // ─── Animaciones ─────────────────────────────────────────────
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(14px); }

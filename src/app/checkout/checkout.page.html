@@ -70,6 +70,10 @@
             <span class="total-label">Subtotal</span>
             <span class="total-value">{{ formatPrice(subtotal()) }}</span>
           </div>
+          <div class="total-row" *ngIf="discountAmount() > 0">
+            <span class="total-label">Descuento ({{ discountPercent() }}%)</span>
+            <span class="total-value total-value--discount">− {{ formatPrice(discountAmount()) }}</span>
+          </div>
           <div class="total-row">
             <span class="total-label">Envío</span>
             <span class="total-value total-value--free" *ngIf="shipping() === 0">Gratis</span>

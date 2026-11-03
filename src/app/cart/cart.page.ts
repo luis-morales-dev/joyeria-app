@@ -38,12 +38,18 @@ export class CartPage {
   readonly isEmpty  = this.cart.isEmpty;
   readonly subtotal = this.cart.subtotal;
   readonly totalQty = this.cart.totalQuantity;
-
-  readonly shipping = computed(() => (this.subtotal() >= 999 ? 0 : 150));
-  readonly total    = computed(() => this.subtotal() + this.shipping());
-
+ 
   // ¿El usuario está autenticado?
   readonly isAuthenticated = computed(() => this.auth.isAuthenticated());
+ 
+  // ─── Descuento, envío y total (calculados en CartService) ─
+  readonly discountPercent      = this.cart.discountPercent;   // 15 o 20
+  readonly discountAmount       = this.cart.discountAmount;    // monto en pesos
+  readonly highTierPercent      = this.cart.highTierPercent;   // 20
+  readonly amountToHighTier     = this.cart.amountToHighTier;  // falta para el 20%
+  readonly shipping             = this.cart.shipping;
+  readonly amountToFreeShipping = this.cart.amountToFreeShipping;  // falta para envío gratis
+  readonly total                = this.cart.total;
 
   constructor() {
     addIcons({
@@ -109,7 +115,8 @@ export class CartPage {
   }
 
   // ─── Ir al checkout ──────────────────────────────────────
-  goToCheckout(): void {
+  //Cambiamos el comportamiento del boton "Checkout"
+  /*goToCheckout(): void {
     if (!this.auth.isAuthenticated()) {
       // No tiene sesión → ir al login pasando /checkout como returnUrl
       // El authGuard del checkout también haría esto, pero es mejor
@@ -120,7 +127,10 @@ export class CartPage {
       return;
     }
     this.router.navigate(['/checkout']);
-  }
+  }*/
+ goToCheckout(): void {
+  this.router.navigate(['/checkout']);
+}
 
   // ─── Seguir comprando ────────────────────────────────────
   goToShop(): void {

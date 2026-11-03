@@ -25,6 +25,7 @@ import { WoocommerceService} from '../services/woocommerce.service';
 import { CartService } from '../services/cart.service';
 import { WCProduct, WCCategory } from '../models/woocommerce.models';
 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',

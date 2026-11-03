@@ -140,6 +140,11 @@
         <span class="summary-value">{{ formatPrice(subtotal()) }}</span>
       </div>
 
+      <div class="summary-row" *ngIf="discountAmount() > 0">
+        <span class="summary-label">Descuento ({{ discountPercent() }}%)</span>
+        <span class="summary-value summary-value--discount">− {{ formatPrice(discountAmount()) }}</span>
+      </div>
+
       <div class="summary-row">
         <span class="summary-label">Envío</span>
         <span class="summary-value summary-value--free" *ngIf="shipping() === 0">
@@ -154,8 +159,16 @@
       <div class="free-shipping-banner" *ngIf="shipping() > 0">
         <span class="banner-icon">✦</span>
         <span>
-          Agrega {{ formatPrice(999 - subtotal()) }} más para obtener
+          Agrega más de {{ formatPrice(amountToFreeShipping()) }} para obtener
           <strong>envío gratis</strong>
+        </span>
+      </div>
+
+      <div class="free-shipping-banner" *ngIf="discountPercent() < highTierPercent">
+        <span class="banner-icon">✦</span>
+        <span>
+          Agrega más de {{ formatPrice(amountToHighTier()) }} para obtener
+          <strong>{{ highTierPercent }}% de descuento</strong>
         </span>
       </div>
 
@@ -169,6 +182,7 @@
 
   </div>
 
+  <app-copyright-footer></app-copyright-footer>
 </ion-content>
 
 <!-- ═══════════════════════════════════════════════════════

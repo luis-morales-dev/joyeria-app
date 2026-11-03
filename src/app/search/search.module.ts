@@ -1,25 +1,3 @@
-/*import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-
-import { IonicModule } from '@ionic/angular';
-
-import { SearchPageRoutingModule } from './search-routing.module';
-
-import { SearchPage } from './search.page';
-
-@NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    SearchPageRoutingModule
-  ],
-  declarations: [SearchPage]
-})
-export class SearchPageModule {}*/
-
-
 // ============================================================
 // src/app/pages/search/search.module.ts
 // ============================================================
@@ -32,6 +10,8 @@ import { RouterModule } from '@angular/router';
 
 import { SearchPage } from './search.page';
 
+import { SharedModule } from '../shared/shared.module';
+
 @NgModule({
   declarations: [SearchPage],
   imports: [
@@ -41,6 +21,7 @@ import { SearchPage } from './search.page';
     RouterModule.forChild([
       { path: '', component: SearchPage }
     ]),
+    SharedModule
   ],
 })
 export class SearchPageModule {}

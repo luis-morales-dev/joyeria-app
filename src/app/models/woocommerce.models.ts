@@ -112,6 +112,8 @@ export interface WCOrder {
   set_paid?: boolean;
   customer_note?: string;
   date_created?: string;
+  fee_lines?: { name: string; tax_status?: string; total: string }[];
+  shipping_lines?: { method_id: string; method_title: string; total: string }[];
 }
 
 // ─── Cliente ──────────────────────────────────────────────

@@ -159,13 +159,23 @@ export class WoocommerceService {
   // ================================================================
 
   /** Crea una nueva orden */
-  createOrder(order: Partial<WCOrder>, token: string): Observable<WCOrder> {
+  /*createOrder(order: Partial<WCOrder>, token: string): Observable<WCOrder> {
     return this.http
       .post<WCOrder>(`${this.apiUrl}/orders`, order, {
         headers: this.getAuthHeaders(token),
       })
       .pipe(catchError(this.handleError));
-  }
+  }*/
+ createOrder(order: Partial<WCOrder>): Observable<WCOrder> {
+  return this.http
+    .post<WCOrder>(`${this.apiUrl}/orders`, order, {
+      params: this.authParams,
+    })
+    .pipe(catchError(this.handleError));
+}
+
+  //Un invitado no tiene token y un cliente tampoco tiene permiso para crear órdenes con su JWT, 
+  // así que ahora usa las keys de la tienda:
 
   /** Obtiene las órdenes del cliente autenticado */
   getCustomerOrders(customerId: number, token: string): Observable<WCOrder[]> {
